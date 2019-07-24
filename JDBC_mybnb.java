@@ -11,62 +11,44 @@ import java.util.List;
 
 public class JDBC_mybnb {
 
-    private static final String dbClassName = "com.mysql.jdbc.Driver";
-    private static final String CONNECTION = "jdbc:mysql://localhost:3306/cscc43db";
-    
     public static void main(String[] args) throws Exception {
         
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String line = br.readLine();
-        //Register JDBC driver
-        Class.forName(dbClassName);
-        //Database credentials
-        System.out.println("Connecting to database...");
-        
-            try {
-                //Establish connection
-                String user = "root";
-                String password = "root";
-                Connection conn = DriverManager.getConnection(CONNECTION, user, password);
-                System.out.println("Successfully connected to MySQL!");
-                
-    //          //Execute a query
-    //          System.out.println("Preparing a statement...");
-    //          Statement stmt = conn.createStatement();
-    //          String sql = "SELECT * FROM Sailors;";
-    //          ResultSet rs = stmt.executeQuery(sql);
-    //          
-    //          //STEP 5: Extract data from result set
-    //          while(rs.next()){
-    //              //Retrieve by column name
-    //              int sid  = rs.getInt("sid");
-    //              String sname = rs.getString("sname");
-    //              int rating = rs.getInt("rating");
-    //              int age = rs.getInt("age");
-    //          
-    //              //Display values
-    //              System.out.print("ID: " + sid);
-    //              System.out.print(", Name: " + sname);
-    //              System.out.print(", Rating: " + rating);
-    //              System.out.println(", Age: " + age);
-    //          }
-                
-                
-                System.out.println("Closing connection...");
-    //          rs.close();
-    //          stmt.close();
-                conn.close();
-                System.out.println("Success!");
-            } catch (Exception e) {
-                System.err.println(e);
-                System.err.println("Connection error occured!");
-            }
-        while(! line.equalsIgnoreCase("q")) {
-            System.out.println("Please enter a number");
+        String line = "";
+        while(! line.equalsIgnoreCase("exit")) {
+            System.out.println("Please enter which operations to perform:"
+            		+ "user(User operation), reports(Admin operations)"
+            		+ "or exit(exit the program).");
             line = br.readLine();
+            switch(line) {
+            	case "users":
+            		break;
+            	case "eports":
+            		break;
+            	default:
+            		break;
+            }
         }
         
         br.close();
+    }
+    
+    public static Connection getConnectiion() throws ClassNotFoundException{
+        try {
+        	String dbClassName = "com.mysql.jdbc.Driver";
+        	String CONNECTION = "jdbc:mysql://localhost:3306/cscc43db";
+        	Class.forName(dbClassName);
+            String user = "root";
+            String password = "root";
+            Connection conn = DriverManager.getConnection(CONNECTION, user, password);
+            System.out.println("Successfully connected to MySQL!");
+            return conn;
+            
+        } catch (SQLException e) {
+
+            System.err.println("Connection error occured!");
+        }
+        return null;
     }
 
 }
