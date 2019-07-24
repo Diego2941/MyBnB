@@ -34,7 +34,7 @@ public class JDBC_mybnb {
         br.close();
     }
     
-    public static Connection getConnection() throws Exception{
+    public static Connection Connect() throws Exception{
         try {
         	String dbClassName = "com.mysql.jdbc.Driver";
         	String CONNECTION = "jdbc:mysql://localhost:3306/cscc43db";
@@ -55,7 +55,7 @@ public class JDBC_mybnb {
     	Connection conn = null;
     	PreparedStatement table = null;
     	try {
-    		conn = getConnection();
+    		conn = Connect();
 	    	table = conn.prepareStatement(query);
 	    	table.executeUpdate();
 	    	
