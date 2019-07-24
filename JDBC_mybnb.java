@@ -1,3 +1,4 @@
+package database;
 
 
 import java.sql.*;
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class JDBCExample {
+public class JDBC_mybnb {
 
     private static final String dbClassName = "com.mysql.jdbc.Driver";
     private static final String CONNECTION = "jdbc:mysql://localhost:3306/cscc43db";
@@ -25,7 +26,7 @@ public class JDBCExample {
             try {
                 //Establish connection
                 String user = "root";
-                String password = "Xin980609!";
+                String password = "root";
                 Connection conn = DriverManager.getConnection(CONNECTION, user, password);
                 System.out.println("Successfully connected to MySQL!");
                 
