@@ -176,51 +176,63 @@ public class CommandLine {
 	      // ask for inputs
 	      String line = "";
 	      System.out.println("Hi, Admin! "
-	              + "Please enter which operations to perform:\n"
-	              + "1. (bookings in specified date range by city)\n"
-	              + "2. (bookings by postal code in specified city)\n"
-	              + "3. (listings by country)\n"
-	              + "4. (listings by country and city)\n"
-	              + "5. (listings by country, city and postal code)\n"
-	              + "6. (host list ranked by number of listings per country)\n"
-	              + "7. (host list ranked on number of listings by city)\n"
-	              + "8. (commercial hosts by country and city)\n"
-	              + "9. (report renters by number of bookings within a specified date)\n"
-	              + "10. (report renters by number of bookings within a specified date grouped by city)\n"
-	              + "11. (report hosts with the largest number of cancellation within a specified year)\n"
-	              + "exit. (back to previous page):");
-	      while(! line.equalsIgnoreCase("exit")) {
+              + "Please enter which operations to perform:\n"
+              + "1. (bookings in specified date range by city)\n"
+              + "2. (bookings by postal code in specified city)\n"
+              + "3. (listings by country)\n"
+              + "4. (listings by country and city)\n"
+              + "5. (listings by country, city and postal code)\n"
+              + "6. (rank host by number of listings per country)\n"
+              + "7. (rank host on number of listings by city)\n"
+              + "8. (commercial hosts by country and city)\n"
+              + "9. (renters rank by number of bookings within a specified time)\n"
+              + "10. (renters rank by number of bookings within a specified time per city)\n"
+              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
+              + "back. (back to previous page):");
+	      while(! line.equalsIgnoreCase("back")) {
 	        line = sc.nextLine();
+	        String temp1;
+	        String temp2;
 	          switch(line) {
 	          case "1":
-	              
+	            System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+	            temp1 = sc.nextLine();
+	            System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+                temp2 = sc.nextLine();
+                sql.reportBookingByDate(temp1, temp2);
+                System.out.println("-------------------------------------------\nPlease enter the next operation: ");
 	              break;
 	          case "2":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "3":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "4":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "5":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "6":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "7":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "8":
-	              
+	            temp1 = sc.nextLine();
 	              break;
 	          case "9":
+	            temp1 = sc.nextLine();
 	              break;
 	          case "10":
+	            temp1 = sc.nextLine();
 	              break;
-	          case "exit":
+	          case "11":
+	            temp1 = sc.nextLine();
+                break;
+	          case "back":
 	        	  System.out.println("Left from the reports page.");
 	              break;
 	          default:
@@ -233,7 +245,7 @@ public class CommandLine {
 	 public  void initiateTables() throws Exception {
 		 String listing, user, booking, calendar;
          listing = "CREATE TABLE IF NOT EXISTS "
-                    + "listings(lid int NOT NULL AUTO_INCREMENT, "
+                    + "listing(lid int NOT NULL AUTO_INCREMENT, "
                     + "name varchar(255), "
                     + "hid int, "
                     + "ltype varchar(255), "
