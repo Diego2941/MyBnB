@@ -79,11 +79,7 @@ public class CommandLine {
 		            input = sc.nextLine();
 		            switch(input) {
 		            	case "signup":
-						try {
 							createAccount();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
 		            		break;
 		            	case "login":
 		            		userOperation();
@@ -108,24 +104,37 @@ public class CommandLine {
 		}
 	}
 	
+	public void printlist(ArrayList<ArrayList<String>> lst) {
+		System.out.println("");
+		for (int i = 0; i < lst.size(); i++) {
+			for (int j = 0; j < lst.size(); j++) {
+				System.out.print(lst.get(i).get(j) + "\t");
+			}
+			System.out.println("");
+		}
+		System.out.println("");
+	}
+	
 	public void userOperation() {
 		String[] user = login();
-		String query = "SELECT uid, name \n"
+		String query = "SELECT uid, name, utype\n"
 				+ "FROM cscc43db.user \n"
 				+ "WHERE uid= " + user[0]
 				+ " AND password= "
 				+ "'" + user[1] + "'";
 		try {
-			String[] ans = sql.findUserPass(query);
-			if (ans[0] != null) {
-				userid = ans[0];
-				username = ans[1];
-				boolean usertype = Boolean.parseBoolean(ans[2]);
-				if (usertype){
-					
+			ArrayList<ArrayList<String>> ans = sql.executequery(query);
+			printlist(ans);
+			if (ans.get(1).get(0) != null) {
+				userid = ans.get(1).get(0);
+				username = ans.get(1).get(1);
+				String usertype = ans.get(1).get(2);
+				
+				if (usertype.equals("true")){
+					hostOperation();
 				}
 				else {
-					
+					renterOperation();
 				}
 			}
 			
@@ -142,11 +151,12 @@ public class CommandLine {
 	      System.out.println("Hi, " + username + " ! "
 	              + "Please enter which operations to perform:\n"
 	              + "1. (delete account)\n"
-	              + "2. (create booking)\n"
-	              + "3. (cancel booking)\n"
-	              + "4. (change price)\n"
-	              + "5. (comment)\n"
-	              + "6. (rate)\n"
+	              + "2. (search)\n"
+	              + "3. (create booking)\n"
+	              + "4. (cancel booking)\n"
+	              + "5. (change price)\n"
+	              + "6. (comment)\n"
+	              + "7. (rate)\n"
 	              + "exit. (back to previous page):");
 	      while(! line.equalsIgnoreCase("exit")) {
 	        line = sc.nextLine();
@@ -158,7 +168,7 @@ public class CommandLine {
 	              
 	              break;
 	          case "3":
-	              
+	              createBooking();
 	              break;
 	          case "4":
 	              
@@ -168,6 +178,11 @@ public class CommandLine {
 	              break;
 	          case "6":
 	        	  
+	        	  break;
+	          
+	          case "7":
+	        	  
+	        	  break;
 	          case "exit":
 	        	  System.out.println("Signing out.");
 	        	  username = "";
@@ -187,12 +202,13 @@ public class CommandLine {
 	      System.out.println("Hi, " + username + " ! "
 	              + "Please enter which operations to perform:\n"
 	    		  + "1. (delete account)\n"
-	              + "2. (cancel booking)\n"
-	              + "3. (change price)\n"
-	              + "4. (update price)\n"
-	              + "5. (change availability)\n"
-	              + "6. (comment)\n"
-	              + "7. (rate)\n"
+	              + "2. (create listing)"
+	              + "3. (cancel booking)\n"
+	              + "4. (change price)\n"
+	              + "5. (update price)\n"
+	              + "6. (change availability)\n"
+	              + "7. (comment)\n"
+	              + "8. (rate)\n"
 	              + "exit. (back to previous page):");
 	      while(! line.equalsIgnoreCase("exit")) {
 	        line = sc.nextLine();
@@ -201,7 +217,7 @@ public class CommandLine {
 	              
 	              break;
 	          case "2":
-	              
+					createListing();
 	              break;
 	          case "3":
 	              
@@ -216,6 +232,9 @@ public class CommandLine {
 	              
 	        	  break;
 	          case "7":
+	        	  
+	        	  break;
+	          case "8":
 	        	  
 	        	  break;
 	          case "exit":
@@ -299,7 +318,7 @@ public class CommandLine {
 	      }
 	 }
 	 
-	 public  void initiateTables() throws Exception {
+	 public  void initiateTables() {
 		 String[] vals = new String[4];
          vals[0] = "CREATE TABLE IF NOT EXISTS "
                     + "listings(lid int NOT NULL AUTO_INCREMENT, "
@@ -308,8 +327,8 @@ public class CommandLine {
                     + "ltype varchar(255), "
                     + "adress varchar(255), "
                     + "city varchar(255), "
-                    + "postcode int, "
                     + "country varchar(255), "
+                    + "postcode int, "
                     + "latitude float, "
                     + "longitude float, "
                     + "aid int, "
@@ -344,12 +363,17 @@ public class CommandLine {
                     + "enddate date, "
                     + "price float)";
         
-        for(int counter = 0; counter < vals.length; counter++) {
-        	sql.insertop(vals[counter]);
+        	try {
+        		for(int counter = 0; counter < vals.length; counter++) {
+        			sql.insertop(vals[counter]);
+        		}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Tables can not be created.");
         }
     }
 	    
-	public void createAccount() throws Exception {
+	public void createAccount() {
 		int counter;
 		String[] vals = new String[8];
 		System.out.print("Name: ");
@@ -374,10 +398,16 @@ public class CommandLine {
 			query = query.concat("'" + vals[counter] + "',");
 		}
 		query = query.concat("'" + vals[counter] + "');");
-		sql.insertop(query);
+		try {
+			sql.insertop(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Account can not be created may be cause "
+					+ "by the format please try again!.");
+		}
 	}
 	
-	public void createBooking() throws Exception {
+	public void createBooking(){
 		int counter;
 		String[] vals = new String[7];
 		System.out.print("ListingID ");
@@ -392,12 +422,59 @@ public class CommandLine {
 		vals[5] = "";
 		vals[6] = "";
 		
-		String query = "INSERT INTO user(lid, uid, utype, checkin"
+		String query = "INSERT INTO booking(lid, uid, utype, checkin"
 				+ "checkout, cancellation, hostcomment, rentercomment) VALUES(";
 		for (counter = 0; counter < vals.length - 1; counter++) {
 			query = query.concat("'" + vals[counter] + "',");
 		}
 		query = query.concat("'" + vals[counter] + "');");
-		sql.insertop(query);
+		try {
+			sql.insertop(query);
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			System.out.println("Booking can not be created may be cause "
+					+ "by the format please try again!.");
+		}
+	}
+	
+	public void createListing() {
+		int counter;
+		String[] vals = new String[9];
+		System.out.print("Name: ");
+		vals[0] = sc.nextLine();
+		System.out.print("ListingType: ");
+		vals[2] = sc.nextLine();
+		System.out.print("Address: ");
+		vals[3] = sc.nextLine();
+		System.out.print("City: ");
+		vals[4] = sc.nextLine();
+		System.out.print("Country: ");
+		vals[5] = sc.nextLine();
+		System.out.print("Postal Code: ");
+		vals[6] = sc.nextLine();
+		System.out.print("Latitude: ");
+		vals[7] = sc.nextLine();
+		System.out.print("Longitude: ");
+		vals[8] = sc.nextLine();
+		System.out.print("Amenities: ");
+		vals[9] = sc.nextLine();
+		
+		vals[1] = userid;
+		
+		String query = "INSERT INTO listing(name, hid, ltype, address"
+				+ "city, country, postcode, latitude"
+				+ "logitude, aid) VALUES(";
+		for (counter = 0; counter < vals.length - 1; counter++) {
+			query = query.concat("'" + vals[counter] + "',");
+		}
+		query = query.concat("'" + vals[counter] + "');");
+		try {
+			sql.insertop(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Listing can not be created may be cause "
+					+ "by the format please try again!.");
+		}
 	}
 }

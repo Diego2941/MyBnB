@@ -51,14 +51,23 @@ public class SQLop {
 	 }
 
 	 
-	 public String[] findUserPass(String query)throws Exception{
-		 	String[] ans = new String[2];
+	 public ArrayList<ArrayList<String>> executequery(String query)throws Exception{
+		 	ArrayList<ArrayList<String>> ans = new ArrayList<ArrayList<String>>();
 	    	try {
 		    	ResultSet rs = st.executeQuery(query);
+		    	ResultSetMetaData rsmd = rs.getMetaData();
+		    	int columnCount = rsmd.getColumnCount();
+		    	ArrayList<String> temp = new ArrayList<String>();
+		    	for (int i = 1; i <= columnCount; i++ ) {
+		    	  temp.add(rsmd.getColumnName(i)+":");
+		    	}
+		    	ans.add(temp);
 		    	while(rs.next()) {
-		    		ans[0] = rs.getString("uid");
-		    		ans[1] = rs.getString("name");
-		    		ans[2] = rs.getString("utype");
+		    		temp = new ArrayList<String>();
+		    		for (int i = 1; i <= columnCount; i++ ) {
+				    	  temp.add(rs.getString(rsmd.getColumnName(i)));
+				    	}
+		    		ans.add(temp);
 		    	}
 		    	
 		    } catch (SQLException e) {
