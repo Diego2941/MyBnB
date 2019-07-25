@@ -211,39 +211,39 @@ public class CommandLine {
 	              + "8. (rate)\n"
 	              + "exit. (back to previous page):");
 	      while(! line.equalsIgnoreCase("exit")) {
-	        line = sc.nextLine();
+	    	  line = sc.nextLine();
 	          switch(line) {
-	          case "1":
-	              
-	              break;
-	          case "2":
-					createListing();
-	              break;
-	          case "3":
-	              
-	              break;
-	          case "4":
-	              
-	              break;
-	          case "5":
-	              
-	              break;
-	          case "6":
-	              
-	        	  break;
-	          case "7":
-	        	  
-	        	  break;
-	          case "8":
-	        	  
-	        	  break;
-	          case "exit":
-	        	  System.out.println("Signing out.");
-	        	  username = "";
-	              break;
-	          default:
-	              System.out.println("Invalid report. Please try again!");
-	              break;
+		          case "1":
+		              
+		              break;
+		          case "2":
+						createListing();
+		              break;
+		          case "3":
+		              
+		              break;
+		          case "4":
+		              
+		              break;
+		          case "5":
+		              
+		              break;
+		          case "6":
+		              
+		        	  break;
+		          case "7":
+		        	  
+		        	  break;
+		          case "8":
+		        	  
+		        	  break;
+		          case "exit":
+		        	  System.out.println("Signing out.");
+		        	  username = "";
+		              break;
+		          default:
+		              System.out.println("Invalid report. Please try again!");
+		              break;
 	          }
 	      }
 	   }
@@ -251,71 +251,83 @@ public class CommandLine {
 	 public void reportOperation() {
 	      // ask for inputs
 	      String line = "";
-	      System.out.println("Hi, Admin! "
-              + "Please enter which operations to perform:\n"
-              + "1. (bookings in specified date range by city)\n"
-              + "2. (bookings by postal code in specified city)\n"
-              + "3. (listings by country)\n"
-              + "4. (listings by country and city)\n"
-              + "5. (listings by country, city and postal code)\n"
-              + "6. (rank host by number of listings per country)\n"
-              + "7. (rank host on number of listings by city)\n"
-              + "8. (commercial hosts by country and city)\n"
-              + "9. (renters rank by number of bookings within a specified time)\n"
-              + "10. (renters rank by number of bookings within a specified time per city)\n"
-              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
-              + "back. (back to previous page):");
 	      while(! line.equalsIgnoreCase("back")) {
-	        line = sc.nextLine();
-	        String temp1;
-	        String temp2;
+	    	  System.out.println("Hi, Admin! "
+	                  + "Please enter which operations to perform:\n"
+	                  + "1. (bookings in specified date range by city)\n"
+	                  + "2. (bookings by postal code in specified city)\n"
+	                  + "3. (listings by country)\n"
+	                  + "4. (listings by country and city)\n"
+	                  + "5. (listings by country, city and postal code)\n"
+	                  + "6. (rank host by number of listings per country)\n"
+	                  + "7. (rank host on number of listings by city)\n"
+	                  + "8. (commercial hosts by country and city)\n"
+	                  + "9. (renters rank by number of bookings within a specified time)\n"
+	                  + "10. (renters rank by number of bookings within a specified time per city)\n"
+	                  + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
+	                  + "back. (back to previous page):");
+	    	  
+	    	  line = sc.nextLine();
 	          switch(line) {
-	          case "1":
-	            System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
-	            temp1 = sc.nextLine();
-	            System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
-                temp2 = sc.nextLine();
-                sql.reportBookingByDate(temp1, temp2);
-                System.out.println("-------------------------------------------\nPlease enter the next operation: ");
-	              break;
-	          case "2":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "3":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "4":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "5":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "6":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "7":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "8":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "9":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "10":
-	            temp1 = sc.nextLine();
-	              break;
-	          case "11":
-	            temp1 = sc.nextLine();
-                break;
-	          case "back":
-	        	  System.out.println("Left from the reports page.");
-	              break;
-	          default:
-	              System.out.println("Invalid report. Please try again!");
-	              break;
+		          case "1":
+		        	  bookingSpecificDateCityReport();
+
+		              break;
+		          case "2":
+
+		              break;
+		          case "3":
+
+		              break;
+		          case "4":
+		          
+		              break;
+		          case "5":
+		        
+		              break;
+		          case "6":
+		        
+		              break;
+		          case "7":
+		    
+		              break;
+		          case "8":
+		
+		              break;
+		          case "9":
+		     
+		              break;
+		          case "10":
+		      
+		              break;
+		          case "11":
+		     
+	                break;
+		          case "back":
+		        	  System.out.println("Left from the reports page.");
+		              break;
+		          default:
+		              System.out.println("Invalid report. Please try again!");
+		              break;
 	          }
 	      }
+	 }
+	 
+	 public void bookingSpecificDateCityReport() {
+		 String start, end;
+		 System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+         start = sc.nextLine();
+         System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+         end = sc.nextLine();
+         String query = "SELECT count(*), city FROM booking Natural Join listings WHERE checkin > '"
+        	      + start + "' and checkout < '" + end + "';";
+         try {
+			ArrayList<ArrayList<String>> ans = sql.executequery(query);
+			printlist(ans);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Does not exist such report format.");
+		}
 	 }
 	 
 	 public  void initiateTables() {
