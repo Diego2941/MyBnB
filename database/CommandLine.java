@@ -224,6 +224,9 @@ public class CommandLine {
 		          case "8":
 		        	  
 		        	  break;
+		          case "j":
+		            help("Host");
+		            break;
 		          case "back":
 		        	  System.out.println("Signing out.\n");
 		        	  username = "";
@@ -281,6 +284,9 @@ public class CommandLine {
 		          case "back":
 		        	  System.out.println("Left from the reports page.");
 		              break;
+		          case "h":
+		            help("Report");
+		            break;
 		          default:
 		              System.out.println("Invalid report. Please try again!");
 		              break;
