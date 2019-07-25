@@ -125,13 +125,12 @@ public class CommandLine {
 				+ "'" + user[1] + "'";
 		try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
-			printlist(ans);
 			if (ans.get(1).get(0) != null) {
 				userid = ans.get(1).get(0);
 				username = ans.get(1).get(1);
 				String usertype = ans.get(1).get(2);
 				
-				if (usertype.equals("true")){
+				if (usertype.equals("1")){
 					hostOperation();
 				}
 				else {
@@ -224,7 +223,7 @@ public class CommandLine {
 		          case "8":
 		        	  
 		        	  break;
-		          case "j":
+		          case "h":
 		            help("Host");
 		            break;
 		          case "back":
@@ -323,7 +322,7 @@ public class CommandLine {
 					break;
 				case "Host":
 					ans = "1. (delete account)\n"
-				              + "2. (create listing)"
+				              + "2. (create listing)\n"
 				              + "3. (cancel booking)\n"
 				              + "4. (change price)\n"
 				              + "5. (update price)\n"
@@ -362,11 +361,11 @@ public class CommandLine {
 	 public  void initiateTables() {
 		 String[] vals = new String[4];
          vals[0] = "CREATE TABLE IF NOT EXISTS "
-                    + "listings(lid int NOT NULL AUTO_INCREMENT, "
+                    + "listing(lid int NOT NULL AUTO_INCREMENT, "
                     + "name varchar(255), "
                     + "hid int, "
                     + "ltype varchar(255), "
-                    + "adress varchar(255), "
+                    + "address varchar(255), "
                     + "city varchar(255), "
                     + "country varchar(255), "
                     + "postcode int, "
@@ -463,8 +462,8 @@ public class CommandLine {
 		vals[5] = "";
 		vals[6] = "";
 		
-		String query = "INSERT INTO booking(lid, uid, utype, checkin"
-				+ "checkout, cancellation, hostcomment, rentercomment) VALUES(";
+		String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
+				+ "cancellation, hostcomment, rentercomment) VALUES(";
 		for (counter = 0; counter < vals.length - 1; counter++) {
 			query = query.concat("'" + vals[counter] + "',");
 		}
@@ -481,7 +480,7 @@ public class CommandLine {
 	
 	public void createListing() {
 		int counter;
-		String[] vals = new String[9];
+		String[] vals = new String[10];
 		System.out.print("Name: ");
 		vals[0] = sc.nextLine();
 		System.out.print("ListingType: ");
@@ -503,13 +502,15 @@ public class CommandLine {
 		
 		vals[1] = userid;
 		
-		String query = "INSERT INTO listing(name, hid, ltype, address"
-				+ "city, country, postcode, latitude"
-				+ "logitude, aid) VALUES(";
+		String query = "INSERT INTO listing(name, hid, ltype, address, "
+				+ "city, country, postcode, latitude, "
+				+ "longitude, aid) VALUES(";
+
 		for (counter = 0; counter < vals.length - 1; counter++) {
 			query = query.concat("'" + vals[counter] + "',");
 		}
 		query = query.concat("'" + vals[counter] + "');");
+		System.out.print(query);
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
