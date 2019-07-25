@@ -292,14 +292,18 @@ public class CommandLine {
 			String ans = "";
 			switch(str) {
 				case "Report":
-					ans = "1. (delete account)\n"
-					        + "2. (search)\n"
-					        + "3. (create booking)\n"
-					        + "4. (cancel booking)\n"
-					        + "5. (change price)\n"
-					        + "6. (comment)\n"
-					        + "7. (rate)\n"
-					        + "exit. (back to previous page):";
+					ans = "1. (bookings in specified date range by city)\n"
+			              + "2. (bookings by postal code in specified city)\n"
+			              + "3. (listings by country)\n"
+			              + "4. (listings by country and city)\n"
+			              + "5. (listings by country, city and postal code)\n"
+			              + "6. (rank host by number of listings per country)\n"
+			              + "7. (rank host on number of listings by city)\n"
+			              + "8. (commercial hosts by country and city)\n"
+			              + "9. (renters rank by number of bookings within a specified time)\n"
+			              + "10. (renters rank by number of bookings within a specified time per city)\n"
+			              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
+			              + "back. (back to previous page):";
 					break;
 				case "Renter":
 					ans = "1. (delete account)\n"
