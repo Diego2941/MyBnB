@@ -71,7 +71,11 @@ public class CommandLine {
 			System.out.println("\n*****************************");
 			System.out.println("******Welcome to MyBnB*******");
 			System.out.println("*****************************\n");
-
+			try {
+				initiateTables();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform:"
@@ -82,6 +86,12 @@ public class CommandLine {
 		            input = sc.nextLine();
 		            switch(input) {
 		            	case "signup":
+						try {
+							createAccount();
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 		            		break;
 		            	case "login":
 		            		break;
@@ -265,30 +275,37 @@ public class CommandLine {
                     + "enddate date, "
                     + "price float)";
             
-        sql.createtable(listing);
-        sql.createtable(user);
-        sql.createtable(booking);
-        sql.createtable(calendar);
+        sql.insertop(listing);
+        sql.insertop(user);
+        sql.insertop(booking);
+        sql.insertop(calendar);
     }
 	    
-	public String[] createAccount() {
-		String[] cred = new String[8];
+	public void createAccount() throws Exception {
+		int counter;
+		String[] vals = new String[8];
 		System.out.print("Name: ");
-		cred[0] = sc.nextLine();
+		vals[0] = sc.nextLine();
 		System.out.print("Password: ");
-		cred[1] = sc.nextLine();
+		vals[1] = sc.nextLine();
 		System.out.print("UserType: ");
-		cred[2] = sc.nextLine();
+		vals[2] = sc.nextLine();
 		System.out.print("Address: ");
-		cred[3] = sc.nextLine();
+		vals[3] = sc.nextLine();
 		System.out.print("Day of birth: ");
-		cred[4] = sc.nextLine();
+		vals[4] = sc.nextLine();
 		System.out.print("Occupation: ");
-		cred[5] = sc.nextLine();
+		vals[5] = sc.nextLine();
 		System.out.print("SIN: ");
-		cred[6] = sc.nextLine();
+		vals[6] = sc.nextLine();
 		System.out.print("Payment Info: ");
-		cred[7] = sc.nextLine();
-		return cred;
+		vals[7] = sc.nextLine();
+		String query = "INSERT INTO user(name, password, utype, "
+				+ "uaddress, birth, ocupation, sin, payment) VALUES(";
+		for (counter = 0; counter < vals.length - 1; counter++) {
+			query = query.concat("'" + vals[counter] + "',");
+		}
+		query = query.concat("'" + vals[counter] + "');");
+		sql.insertop(query);
 	}
 }

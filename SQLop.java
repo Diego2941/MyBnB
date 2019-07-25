@@ -39,19 +39,14 @@ public class SQLop {
 		}
 	}
 	
-	 public void createtable(String query)throws Exception{
-	    	PreparedStatement table = null;
+	 public void insertop(String query)throws Exception{
 	    	try {
-		    	table = conn.prepareStatement(query);
-		    	table.executeUpdate();
+		    	st.executeUpdate(query);
 		    	
 		    } catch (SQLException e) {
 		    	System.err.println(e);
 		        System.err.println("Connection error occured!");
-		        
-		    } finally {
-		    	table.close();
+
 		    }
-	    		
 	 }
 }
