@@ -108,8 +108,8 @@ public class CommandLine {
 	public void printlist(ArrayList<ArrayList<String>> lst) {
 		System.out.println("");
 		for (int i = 0; i < lst.size(); i++) {
-			for (int j = 0; j < lst.size(); j++) {
-				System.out.print(lst.get(i).get(j) + "\t");
+			for (int j = 0; j < lst.get(i).size(); j++) {
+				System.out.print(String.format("|%-20s|", lst.get(i).get(j)));
 			}
 			System.out.println("");
 		}
@@ -247,7 +247,6 @@ public class CommandLine {
 	          switch(line) {
 		          case "1":
 		        	  bookingSpecificDateCityReport();
-
 		              break;
 		          case "2":
 
@@ -340,7 +339,7 @@ public class CommandLine {
          System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
          end = sc.nextLine();
          String query = "SELECT count(*), city FROM booking Natural Join listings WHERE checkin > '"
-        	      + start + "' and checkout < '" + end + "';";
+        	      + start + "' and checkout < '" + end + "' group by city;";
          try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			printlist(ans);
