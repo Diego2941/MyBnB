@@ -88,6 +88,8 @@ public class CommandLine {
 		            		break;
 		            	case "exit":
 		                    System.out.println("Thanks for visiting!");
+		                    username = "";
+				        	userid = "";
 		                    break;
 		            	default:
 		            		System.out.println("Invalid operation. Please try again!");
