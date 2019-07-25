@@ -78,11 +78,11 @@ public class CommandLine {
 			}
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
-				 System.out.println("Please enter which operations to perform:"
-		            		+ "sigup(Create account)"
-						 	+ "login(User operation), "
-		            		+ "reports(Admin operations) "
-		            		+ "or exit(exit the program).");
+				 System.out.println("Please enter which operations to perform:\n"
+		            		+ "sigup(Create account)\n"
+						 	+ "login(User operation)\n"
+		            		+ "reports(Admin operations)\n"
+		            		+ "exit(exit the program):\n");
 		            input = sc.nextLine();
 		            switch(input) {
 		            	case "signup":
@@ -99,7 +99,7 @@ public class CommandLine {
 		            		reportOperation();
 		            		break;
 		            	case "exit":
-		                    System.out.println("Thakns for visiting!");
+		                    System.out.println("Thanks for visiting!");
 		                    break;
 		            	default:
 		            		System.out.println("Invalid operation. Please try again!");
@@ -188,7 +188,7 @@ public class CommandLine {
 	              + "9. (report renters by number of bookings within a specified date)\n"
 	              + "10. (report renters by number of bookings within a specified date grouped by city)\n"
 	              + "11. (report hosts with the largest number of cancellation within a specified year)\n"
-	              + "12. (back to previous page):");
+	              + "exit. (back to previous page):");
 	      while(! line.equalsIgnoreCase("exit")) {
 	        line = sc.nextLine();
 	          switch(line) {
@@ -221,7 +221,7 @@ public class CommandLine {
 	          case "10":
 	              break;
 	          case "exit":
-	        	  System.out.println("Living the reports page.");
+	        	  System.out.println("Left from the reports page.");
 	              break;
 	          default:
 	              System.out.println("Invalid report. Please try again!");
