@@ -252,7 +252,7 @@ public class CommandLine {
 		        	  bookingSpecificDateCityReport();
 		              break;
 		          case "2":
-
+		            
 		              break;
 		          case "3":
 
@@ -348,7 +348,7 @@ public class CommandLine {
          start = sc.nextLine();
          System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
          end = sc.nextLine();
-         String query = "SELECT count(*), city FROM booking Natural Join listings WHERE checkin > '"
+         String query = "SELECT count(*) as '#Bookings', city FROM booking Natural Join listings WHERE checkin > '"
         	      + start + "' and checkout < '" + end + "' group by city;";
          try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
