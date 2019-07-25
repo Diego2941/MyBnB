@@ -231,8 +231,8 @@ public class CommandLine {
 	 }
 	 
 	 public  void initiateTables() throws Exception {
-		 String listing, user, booking, calendar;
-         listing = "CREATE TABLE IF NOT EXISTS "
+		 String[] vals = new String[4];
+         vals[0] = "CREATE TABLE IF NOT EXISTS "
                     + "listings(lid int NOT NULL AUTO_INCREMENT, "
                     + "name varchar(255), "
                     + "hid int, "
@@ -246,7 +246,7 @@ public class CommandLine {
                     + "aid int, "
                     + "PRIMARY KEY (lid))";
             
-        user = "CREATE TABLE IF NOT EXISTS "
+         vals[1] = "CREATE TABLE IF NOT EXISTS "
                     + "user(uid int NOT NULL AUTO_INCREMENT, "
                     + "name varchar(255), "
                     + "password varchar(16), "
@@ -258,7 +258,7 @@ public class CommandLine {
                     + "payment varchar(255), "
                     + "PRIMARY KEY (uid))";
                     
-        booking = "CREATE TABLE IF NOT EXISTS "
+         vals[2] = "CREATE TABLE IF NOT EXISTS "
                     + "booking(bid int NOT NULL AUTO_INCREMENT, "
                     + "lid int, "
                     + "uid int, "
@@ -269,16 +269,15 @@ public class CommandLine {
                     + "rentercomment varchar(255), "
                     + "PRIMARY KEY (bid))";
             
-        calendar = "CREATE TABLE IF NOT EXISTS "
+         vals[3] = "CREATE TABLE IF NOT EXISTS "
                     + "calendar(lid int, "
                     + "startdate date, "
                     + "enddate date, "
                     + "price float)";
-            
-        sql.insertop(listing);
-        sql.insertop(user);
-        sql.insertop(booking);
-        sql.insertop(calendar);
+        
+        for(int counter = 0; counter < vals.length; counter++) {
+        	sql.insertop(vals[counter]);
+        }
     }
 	    
 	public void createAccount() throws Exception {
