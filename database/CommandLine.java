@@ -9,6 +9,7 @@ public class CommandLine {
 	private String adminname = "Admin";
 	private String adminpassword = "password";
 	private String username = "";
+	private String userid = "";
 	
 	public boolean startSession() {
 		boolean success = true;
@@ -48,7 +49,7 @@ public class CommandLine {
 		return cred;
 	}
 	
-	private String[] userlogin() {
+	private String[] login() {
 		String[] cred = new String[2];
 		System.out.print("Username: ");
 		cred[0] = sc.nextLine();
@@ -56,15 +57,7 @@ public class CommandLine {
 		cred[1] = sc.nextLine();
 		return cred;
 	}
-	
-	private String[] adminlogin() {
-		String[] cred = new String[2];
-		System.out.print("Username: ");
-		cred[0] = sc.nextLine();
-		System.out.print("Password: ");
-		cred[1] = sc.nextLine();
-		return cred;
-	}
+
 	
 	public boolean execute() {
 		if (sc != null && sql != null) {
@@ -89,11 +82,11 @@ public class CommandLine {
 						try {
 							createAccount();
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 		            		break;
 		            	case "login":
+		            		userOperation();
 		            		break;
 		            	case "reports":
 		            		reportOperation();
@@ -116,20 +109,91 @@ public class CommandLine {
 	}
 	
 	public void userOperation() {
+		String[] user = login();
+		String query = "SELECT uid, name \n"
+				+ "FROM cscc43db.user \n"
+				+ "WHERE uid= " + user[0]
+				+ " AND password= "
+				+ "'" + user[1] + "'";
+		try {
+			String[] ans = sql.findUserPass(query);
+			if (ans[0] != null) {
+				userid = ans[0];
+				username = ans[1];
+				boolean usertype = Boolean.parseBoolean(ans[2]);
+				if (usertype){
+					
+				}
+				else {
+					
+				}
+			}
+			
+		} catch (Exception e) {
+			System.out.println("The username or password is incorrect"
+					+ "please try again!.");
+		}
+		
+	}
+	
+	public void renterOperation() {
 	      // ask for inputs
 	      String line = "";
 	      System.out.println("Hi, " + username + " ! "
 	              + "Please enter which operations to perform:\n"
-	              + "1. (create account)\n"
-	              + "2. (signin an existing account)\n"
-	              + "3. (create booking)\n"
-	              + "4. (cancel booking)\n"
-	              + "5. (change price)\n"
-	              + "6. (update price)\n"
-	              + "7. (change availability)\n"
-	              + "8. (comment)\n"
-	              + "9. (rate)\n"
-	              + "10. (back to previous page):");
+	              + "1. (delete account)\n"
+	              + "2. (create booking)\n"
+	              + "3. (cancel booking)\n"
+	              + "4. (change price)\n"
+	              + "5. (comment)\n"
+	              + "6. (rate)\n"
+	              + "exit. (back to previous page):");
+	      while(! line.equalsIgnoreCase("exit")) {
+	        line = sc.nextLine();
+	          switch(line) {
+	          case "1":
+	              
+	              break;
+	          case "2":
+	              
+	              break;
+	          case "3":
+	              
+	              break;
+	          case "4":
+	              
+	              break;
+	          case "5":
+	              
+	              break;
+	          case "6":
+	        	  
+	          case "exit":
+	        	  System.out.println("Signing out.");
+	        	  username = "";
+	        	  userid = "";
+	              break;
+	              
+	          default:
+	              System.out.println("Invalid report. Please try again!");
+	              break;
+	          }
+	      }
+	   }
+	
+	public void hostOperation() {
+	      // ask for inputs
+	      String line = "";
+	      System.out.println("Hi, " + username + " ! "
+	              + "Please enter which operations to perform:\n"
+	    		  + "1. (delete account)\n"
+	              + "2. (cancel booking)\n"
+	              + "3. (change price)\n"
+	              + "4. (update price)\n"
+	              + "5. (change availability)\n"
+	              + "6. (comment)\n"
+	              + "7. (rate)\n"
+	              + "exit. (back to previous page):");
 	      while(! line.equalsIgnoreCase("exit")) {
 	        line = sc.nextLine();
 	          switch(line) {
@@ -150,17 +214,10 @@ public class CommandLine {
 	              break;
 	          case "6":
 	              
-	              break;
+	        	  break;
 	          case "7":
-	              
-	              break;
-	          case "8":
-	              
-	              break;
-	          case "9":
-	              break;
-	          case "10":
-	              break;
+	        	  
+	        	  break;
 	          case "exit":
 	        	  System.out.println("Signing out.");
 	        	  username = "";
@@ -262,8 +319,8 @@ public class CommandLine {
                     + "booking(bid int NOT NULL AUTO_INCREMENT, "
                     + "lid int, "
                     + "uid int, "
-                    + "checkin datetime, "
-                    + "checkout datetime, "
+                    + "checkin date, "
+                    + "checkout date, "
                     + "cancelation bool, "
                     + "hostcomment varchar(255), "
                     + "rentercomment varchar(255), "
@@ -301,6 +358,30 @@ public class CommandLine {
 		vals[7] = sc.nextLine();
 		String query = "INSERT INTO user(name, password, utype, "
 				+ "uaddress, birth, ocupation, sin, payment) VALUES(";
+		for (counter = 0; counter < vals.length - 1; counter++) {
+			query = query.concat("'" + vals[counter] + "',");
+		}
+		query = query.concat("'" + vals[counter] + "');");
+		sql.insertop(query);
+	}
+	
+	public void createBooking() throws Exception {
+		int counter;
+		String[] vals = new String[7];
+		System.out.print("ListingID ");
+		vals[0] = sc.nextLine();
+		System.out.print("Checkin: ");
+		vals[2] = sc.nextLine();
+		System.out.print("Checkout: ");
+		vals[3] = sc.nextLine();
+		
+		vals[1] = "";
+		vals[4] = "0";
+		vals[5] = "";
+		vals[6] = "";
+		
+		String query = "INSERT INTO user(lid, uid, utype, checkin"
+				+ "checkout, cancellation, hostcomment, rentercomment) VALUES(";
 		for (counter = 0; counter < vals.length - 1; counter++) {
 			query = query.concat("'" + vals[counter] + "',");
 		}

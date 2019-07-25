@@ -49,4 +49,22 @@ public class SQLop {
 
 		    }
 	 }
+	 
+	 public String[] findUserPass(String query)throws Exception{
+		 	String[] ans = new String[2];
+	    	try {
+		    	ResultSet rs = st.executeQuery(query);
+		    	while(rs.next()) {
+		    		ans[0] = rs.getString("uid");
+		    		ans[1] = rs.getString("name");
+		    		ans[2] = rs.getString("utype");
+		    	}
+		    	
+		    } catch (SQLException e) {
+		    	System.err.println(e);
+		        System.err.println("Connection error occured!");
+
+		    }
+	    	return ans;
+	 }
 }
