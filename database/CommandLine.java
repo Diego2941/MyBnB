@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class CommandLine {
 	private Scanner sc = null;
 	private SQLop sql = null;
-	private String adminname = "Admin";
+	private String admin = "Admin";
 	private String adminpassword = "password";
 	private String username = "";
 	private String userid = "";
@@ -71,13 +71,12 @@ public class CommandLine {
 			}
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
-				 System.out.println("Please enter which operations to perform:\n"
-		            		+ "sigup(Create account)\n"
-						 	+ "login(User operation)\n"
-		            		+ "reports(Admin operations)\n"
-		            		+ "exit(exit the program):\n");
+				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
 		            input = sc.nextLine();
 		            switch(input) {
+		            	case "h":
+		            		help("Menu");
+		            		break;
 		            	case "signup":
 							createAccount();
 		            		break;
@@ -148,50 +147,45 @@ public class CommandLine {
 	public void renterOperation() {
 	      // ask for inputs
 	      String line = "";
-	      System.out.println("Hi, " + username + " ! "
-	              + "Please enter which operations to perform:\n"
-	              + "1. (delete account)\n"
-	              + "2. (search)\n"
-	              + "3. (create booking)\n"
-	              + "4. (cancel booking)\n"
-	              + "5. (change price)\n"
-	              + "6. (comment)\n"
-	              + "7. (rate)\n"
-	              + "exit. (back to previous page):");
-	      while(! line.equalsIgnoreCase("exit")) {
-	        line = sc.nextLine();
+	      while(! line.equalsIgnoreCase("back")) {
+	    	  System.out.println("Hi, " + username + " ! \n"
+		              + "Please enter which operations to perform( " + "'h'" + " for healp " + "'back'" + " for previos page):\n");
+		      line = sc.nextLine();
 	          switch(line) {
-	          case "1":
-	              
-	              break;
-	          case "2":
-	              
-	              break;
-	          case "3":
-	              createBooking();
-	              break;
-	          case "4":
-	              
-	              break;
-	          case "5":
-	              
-	              break;
-	          case "6":
-	        	  
-	        	  break;
-	          
-	          case "7":
-	        	  
-	        	  break;
-	          case "exit":
-	        	  System.out.println("Signing out.");
-	        	  username = "";
-	        	  userid = "";
-	              break;
-	              
-	          default:
-	              System.out.println("Invalid report. Please try again!");
-	              break;
+		          case "h":
+	          			help("Renter");
+	          			break;
+		          case "1":
+		              
+		              break;
+		          case "2":
+		              
+		              break;
+		          case "3":
+		              createBooking();
+		              break;
+		          case "4":
+		              
+		              break;
+		          case "5":
+		              
+		              break;
+		          case "6":
+		        	  
+		        	  break;
+		          
+		          case "7":
+		        	  
+		        	  break;
+		          case "back":
+		        	  System.out.println("Signing out.");
+		        	  username = "";
+		        	  userid = "";
+		              break;
+		              
+		          default:
+		              System.out.println("Invalid report. Please try again!");
+		              break;
 	          }
 	      }
 	   }
@@ -199,18 +193,9 @@ public class CommandLine {
 	public void hostOperation() {
 	      // ask for inputs
 	      String line = "";
-	      System.out.println("Hi, " + username + " ! "
-	              + "Please enter which operations to perform:\n"
-	    		  + "1. (delete account)\n"
-	              + "2. (create listing)"
-	              + "3. (cancel booking)\n"
-	              + "4. (change price)\n"
-	              + "5. (update price)\n"
-	              + "6. (change availability)\n"
-	              + "7. (comment)\n"
-	              + "8. (rate)\n"
-	              + "exit. (back to previous page):");
-	      while(! line.equalsIgnoreCase("exit")) {
+	      while(! line.equalsIgnoreCase("back")) {
+	    	  System.out.println("Hi, " + username + " ! \n"
+		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
 	    	  line = sc.nextLine();
 	          switch(line) {
 		          case "1":
@@ -237,8 +222,8 @@ public class CommandLine {
 		          case "8":
 		        	  
 		        	  break;
-		          case "exit":
-		        	  System.out.println("Signing out.");
+		          case "back":
+		        	  System.out.println("Signing out.\n");
 		        	  username = "";
 		              break;
 		          default:
@@ -248,24 +233,13 @@ public class CommandLine {
 	      }
 	   }
 	
+	
 	 public void reportOperation() {
 	      // ask for inputs
 	      String line = "";
 	      while(! line.equalsIgnoreCase("back")) {
-	    	  System.out.println("Hi, Admin! "
-	                  + "Please enter which operations to perform:\n"
-	                  + "1. (bookings in specified date range by city)\n"
-	                  + "2. (bookings by postal code in specified city)\n"
-	                  + "3. (listings by country)\n"
-	                  + "4. (listings by country and city)\n"
-	                  + "5. (listings by country, city and postal code)\n"
-	                  + "6. (rank host by number of listings per country)\n"
-	                  + "7. (rank host on number of listings by city)\n"
-	                  + "8. (commercial hosts by country and city)\n"
-	                  + "9. (renters rank by number of bookings within a specified time)\n"
-	                  + "10. (renters rank by number of bookings within a specified time per city)\n"
-	                  + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
-	                  + "back. (back to previous page):");
+	    	  System.out.println("Hi, " + admin + " ! \n"
+		              + "Please enter which operations to perform(" + "'h'" + "for help" + "'back'" + "for previos page):\n");
 	    	  
 	    	  line = sc.nextLine();
 	          switch(line) {
@@ -312,6 +286,50 @@ public class CommandLine {
 	      }
 	 }
 	 
+	 public void help(String str) {
+			String ans = "";
+			switch(str) {
+				case "Report":
+					ans = "1. (delete account)\n"
+					        + "2. (search)\n"
+					        + "3. (create booking)\n"
+					        + "4. (cancel booking)\n"
+					        + "5. (change price)\n"
+					        + "6. (comment)\n"
+					        + "7. (rate)\n"
+					        + "exit. (back to previous page):";
+					break;
+				case "Renter":
+					ans = "1. (delete account)\n"
+					        + "2. (search)\n"
+					        + "3. (create booking)\n"
+					        + "4. (cancel booking)\n"
+					        + "5. (change price)\n"
+					        + "6. (comment)\n"
+					        + "7. (rate)\n"
+					        + "exit. (back to previous page):";
+					break;
+				case "Host":
+					ans = "1. (delete account)\n"
+				              + "2. (create listing)"
+				              + "3. (cancel booking)\n"
+				              + "4. (change price)\n"
+				              + "5. (update price)\n"
+				              + "6. (change availability)\n"
+				              + "7. (comment)\n"
+				              + "8. (rate)\n"
+				              + "exit. (back to previous page):";
+					break;
+				default:
+					ans = "sigup(Create account)\n"
+						+ "login(User operation)\n"
+						+ "reports(Admin operations)\n"
+						+ "exit(exit the program):\n";
+					break;
+			}
+
+			System.out.println(ans);
+		}
 	 public void bookingSpecificDateCityReport() {
 		 String start, end;
 		 System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
