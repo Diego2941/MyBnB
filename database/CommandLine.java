@@ -263,13 +263,13 @@ public class CommandLine {
 		            listingCountryCityPost();
 		              break;
 		          case "6":
-		        
+		            rankHostPerCountry();
 		              break;
 		          case "7":
-		    
+		            rankHostByCity();
 		              break;
 		          case "8":
-		
+		            commercialHost();
 		              break;
 		          case "9":
 		     
@@ -293,6 +293,46 @@ public class CommandLine {
 	      }
 	}
 	 
+    private void commercialHost() {
+      String query = "SELECT b.hid, b.city, b.country FROM (SELECT count(*) "
+          + "as countTotal, city, country From listing Group BY city, country) "
+          + "a, (SELECT count(*) as countHost, hid, city, country From listing "
+          + "Group BY hid, city, country) b WHERE a.city = b.city and a.country "
+          + "= b.country and b.countHost >= (a.countTotal/10)";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankHostByCity() {
+      String query = "SELECT hid, city, country, count(*) as numListings FROM "
+          + "listing group by city, country, hid order by numListings DESC;";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankHostPerCountry() {
+      String query = "SELECT hid, country, count(*) as "
+          + "numListings FROM listing group by country, hid ORDER BY "
+          + "numListings DESC;";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
     private void listingCountryCity() {
       String query = "SELECT count(*) as '#listing', city, country FROM listing "
           + "group by country, city order by country";
