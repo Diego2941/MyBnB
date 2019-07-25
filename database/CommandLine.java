@@ -238,7 +238,7 @@ public class CommandLine {
 	   }
 	
 	
-	 public void reportOperation() {
+	public void reportOperation() {
 	      // ask for inputs
 	      String line = "";
 	      while(! line.equalsIgnoreCase("back")) {
@@ -248,13 +248,13 @@ public class CommandLine {
 	    	  line = sc.nextLine();
 	          switch(line) {
 		          case "1":
-		        	  bookingSpecificDateCityReport();
+		        	bookingSpecificDateCityReport();
 		              break;
 		          case "2":
-		            
+		            bookingSpecificDatePostal();
 		              break;
 		          case "3":
-
+		            
 		              break;
 		          case "4":
 		          
@@ -291,14 +291,31 @@ public class CommandLine {
 		              break;
 	          }
 	      }
-	 }
+	}
 	 
-	 public void help(String str) {
+    private void bookingSpecificDatePostal() {
+        String start, end;
+        System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+        start = sc.nextLine();
+        System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+        end = sc.nextLine();
+        String query = "SELECT count(postcode), postcode, city FROM booking Natural Join listing WHERE checkin > '"
+                 + start + "' and checkout < '" + end + "' group by city, postcode;";
+        try {
+           ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           printlist(ans);
+       } catch (Exception e) {
+           e.printStackTrace();
+           System.out.println("Does not exist such report format.");
+       }
+    }
+
+    public void help(String str) {
 			String ans = "";
 			switch(str) {
 				case "Report":
 					ans = "1. (bookings in specified date range by city)\n"
-			              + "2. (bookings by postal code in specified city)\n"
+			              + "2. (bookings by postal code in specified date range within city)\n"
 			              + "3. (listings by country)\n"
 			              + "4. (listings by country and city)\n"
 			              + "5. (listings by country, city and postal code)\n"
@@ -341,13 +358,14 @@ public class CommandLine {
 
 			System.out.println(ans);
 		}
+  
 	 public void bookingSpecificDateCityReport() {
 		 String start, end;
 		 System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
          start = sc.nextLine();
          System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
          end = sc.nextLine();
-         String query = "SELECT count(*) as '#Bookings', city FROM booking Natural Join listings WHERE checkin > '"
+         String query = "SELECT count(*) as '#Bookings', city FROM booking Natural Join listing WHERE checkin > '"
         	      + start + "' and checkout < '" + end + "' group by city;";
          try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
