@@ -61,7 +61,7 @@ public class SQLop {
       ResultSet rs = query.executeQuery(sql);
       // find the number of histories in the result
       while (rs.next()) {
-        System.out.println(rs.getString(1) + rs.getString(2));
+        System.out.println(rs.getString(1) + " " + rs.getString(2));
       }
     } catch (SQLException e) {
       e.printStackTrace();

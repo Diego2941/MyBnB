@@ -270,7 +270,7 @@ public class CommandLine {
                     + "payment varchar(255), "
                     + "PRIMARY KEY (uid))";
                     
-        booking = "CREATE TABLE IF NOT EXISTS "
+         vals[2] = "CREATE TABLE IF NOT EXISTS "
                     + "booking(bid int NOT NULL AUTO_INCREMENT, "
                     + "lid int, "
                     + "uid int, "
