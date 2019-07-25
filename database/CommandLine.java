@@ -254,13 +254,13 @@ public class CommandLine {
 		            bookingSpecificDatePostal();
 		              break;
 		          case "3":
-		            
+		            listingCountry();
 		              break;
 		          case "4":
-		          
+		            listingCountryCity();
 		              break;
 		          case "5":
-		        
+		            listingCountryCityPost();
 		              break;
 		          case "6":
 		        
@@ -293,13 +293,48 @@ public class CommandLine {
 	      }
 	}
 	 
+    private void listingCountryCity() {
+      String query = "SELECT count(*) as '#listing', city, country FROM listing "
+          + "group by country, city order by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void listingCountryCityPost() {
+      String query = "SELECT count(*) as '#listing', postcode, city, country "
+          + "FROM listing group by country, city, postcode order by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void listingCountry() {
+      String query = "SELECT count(*) as '#listing', country FROM listing group by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
     private void bookingSpecificDatePostal() {
         String start, end;
         System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
         start = sc.nextLine();
         System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
         end = sc.nextLine();
-        String query = "SELECT count(postcode), postcode, city FROM booking Natural Join listing WHERE checkin > '"
+        String query = "SELECT count(postcode) as '#Bookings', postcode, city FROM booking Natural Join listing WHERE checkin > '"
                  + start + "' and checkout < '" + end + "' group by city, postcode;";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
