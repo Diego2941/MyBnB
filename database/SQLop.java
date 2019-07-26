@@ -52,7 +52,6 @@ public class SQLop {
 	 
 	 public ArrayList<ArrayList<String>> executequery(String query)throws Exception{
 		 	ArrayList<ArrayList<String>> ans = new ArrayList<ArrayList<String>>();
-	    	try {
 		    	ResultSet rs = st.executeQuery(query);
 		    	ResultSetMetaData rsmd = rs.getMetaData();
 		    	int columnCount = rsmd.getColumnCount();
@@ -68,11 +67,7 @@ public class SQLop {
 				    	}
 		    		ans.add(temp);
 		    	}
-		    	
-		    } catch (SQLException e) {
-		    	e.printStackTrace();
 
-		    }
 	    	return ans;
 	 }
 }

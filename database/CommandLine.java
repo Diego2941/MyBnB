@@ -104,14 +104,14 @@ public class CommandLine {
 	}
 	
 	public void printlist(ArrayList<ArrayList<String>> lst) {
-		System.out.println("");
+		System.out.println("\n-----------------------------------------------");
 		for (int i = 0; i < lst.size(); i++) {
 			for (int j = 0; j < lst.get(i).size(); j++) {
 				System.out.print(String.format("|%-20s|", lst.get(i).get(j)));
 			}
 			System.out.println("");
 		}
-		System.out.println("");
+		System.out.println("-----------------------------------------------\n");
 	}
 	
 	public void userOperation() {
@@ -233,7 +233,7 @@ public class CommandLine {
 	   }
 	
 	
-	 public void reportOperation() {
+	public void reportOperation() {
 	      // ask for inputs
 	      String line = "";
 	      while(! line.equalsIgnoreCase("back")) {
@@ -243,37 +243,37 @@ public class CommandLine {
 	    	  line = sc.nextLine();
 	          switch(line) {
 		          case "1":
-		        	  bookingSpecificDateCityReport();
+		        	bookingSpecificDateCityReport();
 		              break;
 		          case "2":
-
+		            bookingSpecificDatePostal();
 		              break;
 		          case "3":
-
+		            listingCountry();
 		              break;
 		          case "4":
-		          
+		            listingCountryCity();
 		              break;
 		          case "5":
-		        
+		            listingCountryCityPost();
 		              break;
 		          case "6":
-		        
+		            rankHostPerCountry();
 		              break;
 		          case "7":
-		    
+		            rankHostByCity();
 		              break;
 		          case "8":
-		
+		            commercialHost();
 		              break;
 		          case "9":
-		     
+		            rankRenterInTime();
 		              break;
 		          case "10":
-		      
+		            rankRenterTimePerCity();
 		              break;
 		          case "11":
-		     
+		            largeCancelInYear();
 	                break;
 		          case "back":
 		        	  System.out.println("Left from the reports page.");
@@ -286,9 +286,162 @@ public class CommandLine {
 		              break;
 	          }
 	      }
-	 }
+	}
 	 
-	 public void help(String str) {
+    private void largeCancelInYear() {
+      String year;
+      System.out.println("Please enter the year:\n");
+      year = sc.nextLine();
+      String query = "SELECT uid, utype, count(*) as numOfCancel FROM booking "
+          + "NATURAL JOIN user WHERE cancelation = 1 and checkin >= '"
+          + year + "-01-01' and checkout < '"
+          + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and utype = 0 "
+              + "group by uid HAVING numOfCancel = (SELECT MAX(a.count) as "
+              + "numOfCancel FROM (SELECT count(*) as count FROM booking NATURAL"
+              + " JOIN user WHERE cancelation = 1 and checkin >= '1998-01-01' "
+              + "and checkout <= '2000-01-01' and utype = 0 GROUP BY uid) a) "
+              + "UNION SELECT uid, utype, count(*) as numOfCancel FROM booking "
+              + "NATURAL JOIN user WHERE cancelation = 1 and checkin >= '"
+              + year + "-01-01' and checkout < '"
+              + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' "
+                  + "and utype = 1 group "
+              + "by uid HAVING numOfCancel = (SELECT MAX(a.count) as numOfCancel"
+              + " FROM (SELECT count(*) as count FROM booking NATURAL JOIN user "
+              + "WHERE cancelation = 1 and checkin >= '1998-01-01' and checkout"
+              + " <= '2000-01-01' and utype = 1 GROUP BY uid) a)";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankRenterTimePerCity() {
+      String start, end;
+      System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+      start = sc.nextLine();
+      System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+      end = sc.nextLine();
+      String query = "SELECT uid, city, count(*) as numBookings FROM booking Natural Join listing WHERE checkin >= '"
+               + start + "' and checkout < '" + end + "' and cancelation = 0 group by uid, city order by numBookings DESC";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankRenterInTime() {
+      String start, end;
+      System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+      start = sc.nextLine();
+      System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+      end = sc.nextLine();
+      String query = "SELECT uid, count(*) as numBookings FROM booking WHERE checkin >= '"
+               + start + "' and checkout <= '" + end + "' group by uid order by numBookings DESC";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void commercialHost() {
+      String query = "SELECT b.hid, b.city, b.country FROM (SELECT count(*) "
+          + "as countTotal, city, country From listing Group BY city, country) "
+          + "a, (SELECT count(*) as countHost, hid, city, country From listing "
+          + "Group BY hid, city, country) b WHERE a.city = b.city and a.country "
+          + "= b.country and b.countHost >= (a.countTotal/10)";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankHostByCity() {
+      String query = "SELECT hid, city, country, count(*) as numListings FROM "
+          + "listing group by city, country, hid order by numListings DESC;";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void rankHostPerCountry() {
+      String query = "SELECT hid, country, count(*) as "
+          + "numListings FROM listing group by country, hid ORDER BY "
+          + "numListings DESC;";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void listingCountryCity() {
+      String query = "SELECT count(*) as '#listing', city, country FROM listing "
+          + "group by country, city order by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void listingCountryCityPost() {
+      String query = "SELECT count(*) as '#listing', postcode, city, country "
+          + "FROM listing group by country, city, postcode order by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void listingCountry() {
+      String query = "SELECT count(*) as '#listing', country FROM listing group by country";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
+    private void bookingSpecificDatePostal() {
+        String start, end;
+        System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
+        start = sc.nextLine();
+        System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
+        end = sc.nextLine();
+        String query = "SELECT count(postcode) as '#Bookings', postcode, city FROM booking Natural Join listing WHERE checkin >= '"
+                 + start + "' and checkout <= '" + end + "' group by city, postcode;";
+        try {
+           ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           printlist(ans);
+       } catch (Exception e) {
+           
+           System.out.println("Does not exist such report format.");
+       }
+    }
+
+    public void help(String str) {
 			String ans = "";
 			switch(str) {
 				case "Report":
@@ -334,19 +487,19 @@ public class CommandLine {
 
 			System.out.println(ans);
 		}
+  
 	 public void bookingSpecificDateCityReport() {
 		 String start, end;
 		 System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
          start = sc.nextLine();
          System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
          end = sc.nextLine();
-         String query = "SELECT count(*), city FROM booking Natural Join listings WHERE checkin > '"
-        	      + start + "' and checkout < '" + end + "' group by city;";
+         String query = "SELECT count(*) as '#Bookings', city FROM booking Natural Join listing WHERE checkin >= '"
+        	      + start + "' and checkout <= '" + end + "' group by city;";
          try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			printlist(ans);
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("Does not exist such report format.");
 		}
 	 }
