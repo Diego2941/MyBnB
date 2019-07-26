@@ -143,6 +143,54 @@ public class CommandLine {
 		
 	}
 	
+    public void help(String str) {
+			String ans = "";
+			switch(str) {
+				case "Report":
+					ans = "1. (bookings in specified date range by city)\n"
+			              + "2. (bookings by postal code in specified date range within city)\n"
+			              + "3. (listings by country)\n"
+			              + "4. (listings by country and city)\n"
+			              + "5. (listings by country, city and postal code)\n"
+			              + "6. (rank host by number of listings per country)\n"
+			              + "7. (rank host on number of listings by city)\n"
+			              + "8. (commercial hosts by country and city)\n"
+			              + "9. (renters rank by number of bookings within a specified time)\n"
+			              + "10. (renters rank by number of bookings within a specified time per city)\n"
+			              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
+			              + "back. (back to previous page):";
+					break;
+				case "Renter":
+					ans = "1. (delete account)\n"
+					        + "2. (search)\n"
+					        + "3. (create booking)\n"
+					        + "4. (cancel booking)\n"
+					        + "5. (comment)\n"
+					        + "6. (rate)\n"
+					        + "exit. (back to previous page):";
+					break;
+				case "Host":
+					ans = "1. (delete account)\n"
+				              + "2. (create listing)\n"
+				              + "3. (cancel booking)\n"
+				              + "4. (change price)\n"
+				              + "5. (change availability)\n"
+				              + "6. (comment)\n"
+				              + "7. (rate)\n"
+				              + "8. (remove listing)\n"
+				              + "exit. (back to previous page):";
+					break;
+				default:
+					ans = "sigup(Create account)\n"
+						+ "login(User operation)\n"
+						+ "reports(Admin operations)\n"
+						+ "exit(exit the program):\n";
+					break;
+			}
+
+			System.out.println(ans);
+		}
+	
 	public void renterOperation() {
 	      // ask for inputs
 	      String line = "";
@@ -217,7 +265,10 @@ public class CommandLine {
 		              
 		        	  break;
 		          case "7":
-		        	  
+		        	  break;
+		          case "8":
+		        	  removeListing();
+		        	  break;
 		          case "h":
 		            help("Host");
 		            break;
@@ -440,53 +491,6 @@ public class CommandLine {
            System.out.println("Does not exist such report format.");
        }
     }
-
-    public void help(String str) {
-			String ans = "";
-			switch(str) {
-				case "Report":
-					ans = "1. (bookings in specified date range by city)\n"
-			              + "2. (bookings by postal code in specified date range within city)\n"
-			              + "3. (listings by country)\n"
-			              + "4. (listings by country and city)\n"
-			              + "5. (listings by country, city and postal code)\n"
-			              + "6. (rank host by number of listings per country)\n"
-			              + "7. (rank host on number of listings by city)\n"
-			              + "8. (commercial hosts by country and city)\n"
-			              + "9. (renters rank by number of bookings within a specified time)\n"
-			              + "10. (renters rank by number of bookings within a specified time per city)\n"
-			              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
-			              + "back. (back to previous page):";
-					break;
-				case "Renter":
-					ans = "1. (delete account)\n"
-					        + "2. (search)\n"
-					        + "3. (create booking)\n"
-					        + "4. (cancel booking)\n"
-					        + "5. (comment)\n"
-					        + "6. (rate)\n"
-					        + "exit. (back to previous page):";
-					break;
-				case "Host":
-					ans = "1. (delete account)\n"
-				              + "2. (create listing)\n"
-				              + "3. (cancel booking)\n"
-				              + "4. (change price)\n"
-				              + "5. (change availability)\n"
-				              + "6. (comment)\n"
-				              + "7. (rate)\n"
-				              + "exit. (back to previous page):";
-					break;
-				default:
-					ans = "sigup(Create account)\n"
-						+ "login(User operation)\n"
-						+ "reports(Admin operations)\n"
-						+ "exit(exit the program):\n";
-					break;
-			}
-
-			System.out.println(ans);
-		}
   
 	 public void bookingSpecificDateCityReport() {
 		 String start, end;
@@ -716,6 +720,22 @@ public class CommandLine {
 			System.out.println("Listing can not be created may be cause "
 					+ "by the format please try again!.");
 		}
+	}
+	
+	public void removeListing() {
+		System.out.println("ListingId you want to remove: ");
+		String id = sc.nextLine();
+		String query = "DELETE "
+				+ "FROM listing "
+				+ "WHERE lid =" + "'" + id + "'";
+		
+		try {
+			sql.insertop(query);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Listing can not be deleted.");
+		}
+		
 	}
 	
 	public void ammenitiesInput() {
