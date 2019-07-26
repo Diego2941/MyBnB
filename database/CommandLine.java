@@ -676,7 +676,7 @@ public class CommandLine {
 		String query = "SELECT * "
 				+ "FROM booking "
 				+ "WHERE uid = " + "'" + userid + "' AND " 
-				+ " checkin >= " + getdate() + " AND "
+				+ " checkin >= CURDATE() AND "
 						+ "cancelation = 0";
 		try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
@@ -820,6 +820,15 @@ public class CommandLine {
 			System.out.println("User can not be deleted.");
 		}
 		
+	}
+	
+	public void checkAvaible() {
+		String query = "SELECT * "
+				+ "FROM  listing "
+				+ "WHERE not exists (SELECT 1"
+				+ "FROM bookings "
+				+ "WHERE listing.lid = booking.lid and"
+				+ "";
 	}
 	
 	
