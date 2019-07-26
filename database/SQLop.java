@@ -44,8 +44,7 @@ public class SQLop {
 		    	st.executeUpdate(query);
 		    	
 		    } catch (SQLException e) {
-		    	System.err.println(e);
-		        System.err.println("Connection error occured!");
+		    	e.printStackTrace();
 
 		    }
 	 }
@@ -71,8 +70,7 @@ public class SQLop {
 		    	}
 		    	
 		    } catch (SQLException e) {
-		    	System.err.println(e);
-		        System.err.println("Connection error occured!");
+		    	e.printStackTrace();
 
 		    }
 	    	return ans;
