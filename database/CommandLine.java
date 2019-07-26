@@ -275,6 +275,9 @@ public class CommandLine {
 		          case "11":
 		            largeCancelInYear();
 	                break;
+		          case "12":
+                    renterPopularComments();
+                    break;
 		          case "back":
 		        	  System.out.println("Left from the reports page.");
 		              break;
@@ -288,6 +291,19 @@ public class CommandLine {
 	      }
 	}
 	 
+    private void renterPopularComments() {
+      String query = "SELECT a.lid, a.rentercomment, a.hostcomment, "
+          + "MAX(a.count) as numOfOccurance FROM (SELECT lid, rentercomment, "
+          + "hostcomment, count(*) as count FROM booking group by lid order by "
+          + "count desc, lid) a group by a.lid order by numOfOccurance desc";
+      try {
+         ArrayList<ArrayList<String>> ans = sql.executequery(query);
+         printlist(ans);
+     } catch (Exception e) {
+         System.out.println("Does not exist such report format.");
+     }
+  }
+
     private void largeCancelInYear() {
       String year;
       System.out.println("Please enter the year:\n");
@@ -298,8 +314,10 @@ public class CommandLine {
           + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and utype = 0 "
               + "group by uid HAVING numOfCancel = (SELECT MAX(a.count) as "
               + "numOfCancel FROM (SELECT count(*) as count FROM booking NATURAL"
-              + " JOIN user WHERE cancelation = 1 and checkin >= '1998-01-01' "
-              + "and checkout <= '2000-01-01' and utype = 0 GROUP BY uid) a) "
+              + " JOIN user WHERE cancelation = 1 and checkin >= '"
+              + year + "-01-01' and checkout < '"
+              + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and "
+                  + "utype = 0 GROUP BY uid) a) "
               + "UNION SELECT uid, utype, count(*) as numOfCancel FROM booking "
               + "NATURAL JOIN user WHERE cancelation = 1 and checkin >= '"
               + year + "-01-01' and checkout < '"
@@ -307,8 +325,10 @@ public class CommandLine {
                   + "and utype = 1 group "
               + "by uid HAVING numOfCancel = (SELECT MAX(a.count) as numOfCancel"
               + " FROM (SELECT count(*) as count FROM booking NATURAL JOIN user "
-              + "WHERE cancelation = 1 and checkin >= '1998-01-01' and checkout"
-              + " <= '2000-01-01' and utype = 1 GROUP BY uid) a)";
+              + "WHERE cancelation = 1 and checkin >= '"
+              + year + "-01-01' and checkout < '"
+              + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' "
+                  + "and utype = 1 GROUP BY uid) a)";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
