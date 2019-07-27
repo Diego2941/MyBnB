@@ -12,12 +12,12 @@ public class Amenity {
 	}
 	
 	public void createAmmenities(String[] vals, String lid) {
-		String query = "INSERT INTO amenity(lid, wifi, tv, parking, gym, "
-				+ "pool, kitchen) VALUES(" + "'" + lid +"', ";
+		String query = "INSERT INTO amenity(lid, amenities) VALUES(" + "'" + lid +"', ";
 
-		query = CommandLine.getQuery(query, vals);
 		try {
-			sql.insertop(query);
+			for(int i=0; i < vals.length; i++) {
+				sql.insertop(query + "'"+ vals[i] +"')");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Ammenieites can not be created may be cause "
