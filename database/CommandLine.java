@@ -168,7 +168,7 @@ public class CommandLine {
 					        + "4. (cancel booking)\n"
 					        + "5. (comment)\n"
 					        + "6. (rate)\n"
-					        + "exit. (back to previous page):";
+					        + "back. (back to previous page):";
 					break;
 				case "Host":
 					ans = "1. (delete account)\n"
@@ -179,7 +179,7 @@ public class CommandLine {
 				              + "6. (comment)\n"
 				              + "7. (rate)\n"
 				              + "8. (remove listing)\n"
-				              + "exit. (back to previous page):";
+				              + "back. (back to previous page):";
 					break;
 				default:
 					ans = "sigup(Create account)\n"
@@ -197,7 +197,7 @@ public class CommandLine {
 	      String line = "";
 	      while(! line.equalsIgnoreCase("back")) {
 	    	  System.out.println("Hi, " + username + " ! \n"
-		              + "Please enter which operations to perform( " + "'h'" + " for healp " + "'back'" + " for previos page):\n");
+		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
 		      line = sc.nextLine();
 	          switch(line) {
 		          case "h":
