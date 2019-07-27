@@ -657,14 +657,23 @@ public class CommandLine {
 		}
 	}
 	
-	public void bookingInput() {
-		String[] vals = new String[6];
+	public String[] idAndTimeInput() {
+		String[] vals = new String[3];
 		System.out.print("ListingID ");
 		vals[0] = sc.nextLine();
 		System.out.print("Checkin: ");
-		vals[2] = sc.nextLine();
+		vals[1] = sc.nextLine();
 		System.out.print("Checkout: ");
-		vals[3] = sc.nextLine();
+		vals[2] = sc.nextLine();
+		return vals;
+	}
+	
+	public void bookingInput() {
+		String[] vals = new String[6];
+		String[] temp = idAndTimeInput();
+		vals[0] = temp[0];
+		vals[2] = temp[1];
+		vals[3] = temp[2];
 		vals[1] = userid;
 		vals[4] = "";
 		vals[5] = "";
@@ -678,7 +687,12 @@ public class CommandLine {
 				+ "hostcomment, rentercomment) VALUES(";
 		query = getQuery(query, vals);
 		try {
-				sql.insertop(query);
+				if (checkAvaible(vals[0], vals[2], vals[3])) {
+					sql.insertop(query);
+				}
+				else {
+					System.out.println("Sorry the listing you choose is not avaible in the given dates.");
+				}
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -699,19 +713,19 @@ public class CommandLine {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			printlist(ans);
 			if (ans.get(1).get(0) != "null") {
-				System.out.print("ListingID ");
-				String lid = sc.nextLine();
-				System.out.print("Checkin: ");
-				String cin = sc.nextLine();
-				System.out.print("Checkout: ");
-				String cout = sc.nextLine();
-				mergeCalendar(num, lid, cin, cout);
-				query = "UPDATE booking SET cancelation = " + "'" + num + "'"
+				String[] vals = idAndTimeInput();
+				if (checkAvaible(vals[0], vals[1], vals[2])) {
+					mergeCalendar(num, vals[0], vals[1], vals[2]);
+					query = "UPDATE booking SET cancelation = " + "'" + num + "'"
 						+ "WHERE uid = " + "'" + userid + "' OR"
 								+ " lid = " + "'" + userid + "' AND "
-								+ " checkin = " + "'" + cin + "'" + " AND "
-										+ "checkout = " + "'" + cout + "'"; 
-				sql.insertop(query);
+								+ " checkin = " + "'" + vals[1] + "'" + " AND "
+										+ "checkout = " + "'" + vals[2] + "'"; 
+					sql.insertop(query);
+				}
+				else {
+					System.out.println("You did not select any of your existing bookings.");
+				}
 			}
 			else {
 				System.out.println("You do not have any bookings.");
@@ -721,8 +735,30 @@ public class CommandLine {
 		}
 	}
 	
+	public void updatePrice(String price, String[] vals) {
+		String query = "UPDATE calendar SET price= " + "'" + price + "' "
+				+ "WHERE lid= " + "'" + vals[0] + "' "
+				+ "startdate= " + "'" + vals[1] + "' "
+				+ "enddate= " + "'" + vals[2] + "' ";
+		try {
+			sql.executequery(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void changePrice() {
-		
+		String[] vals = idAndTimeInput();
+		if (checkAvaible(vals[0], vals[1], vals[2])) {
+			System.out.print("Newprice: ");
+			String price = sc.nextLine();
+			updatePrice(price, vals);
+		}
+		else {
+			System.out.println("You can not change the price. It may be that "
+					+ " you do not have that listing or it is unavaible");
+		}
 	}
 
 	
@@ -885,6 +921,23 @@ public class CommandLine {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean checkAvaible(String lid, String start, String end) {
+		String query = "SELECT * FROM calendar "
+				+ "WHERE lid = " + "'" + lid + "' AND "
+						+ "startdate= " + "'" + start + "' AND "
+								+ "enddate= " + "'" + end + "' AND ";
+		try {
+			if (sql.executequery(query).get(1).get(0) != null) {
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 	
 	public void splitCalendar(String user, String id, String start, String end) {
