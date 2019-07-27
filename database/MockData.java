@@ -1,13 +1,8 @@
 package database;
 
 public class MockData {
-	private User user = null;
 	
-	public MockData(User use) {
-		user=use;
-	}
-	
-	public void mock() {
+	public static void mock(User user) {
 		String [] a = {"a", "a", "1", "1 Military", "1999-09-08", "No", "104264547", "454125458"};
 		String [] b = {"b", "b", "0", "2 Military", "1998-05-08", "Teacher", "004564547", "724574459"};
 		String [] c = {"c", "c", "0", "3 Military", "1970-06-08", "Rest", "100425517", "866981139"};

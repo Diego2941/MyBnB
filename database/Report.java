@@ -44,7 +44,7 @@ public class Report {
     }
 
       public void commercialHost() {
-        String query = "SELECT b.hid as commercialHost, b.city, b.country FROM (SELECT count(*) "
+        String query = "SELECT b.hid, b.city, b.country FROM (SELECT count(*) "
             + "as countTotal, city, country From listing Group BY city, country) "
             + "a, (SELECT count(*) as countHost, hid, city, country From listing "
             + "Group BY hid, city, country) b WHERE a.city = b.city and a.country "
@@ -53,7 +53,7 @@ public class Report {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
            CommandLine.printlist(ans);
        } catch (Exception e) {
-         System.out.println("Does not exist such report format.");
+         System.out.println(e);
        }
     }
 
