@@ -158,7 +158,8 @@ public class CommandLine {
 			              + "9. (renters rank by number of bookings within a specified time)\n"
 			              + "10. (renters rank by number of bookings within a specified time per city)\n"
 			              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
-			              + "back. (back to previous page):";
+			              + "12. (most popular comments from renters)\n"
+			              + "back. (back to previous page):\n======================================";
 					break;
 				case "Renter":
 					ans = "1. (delete account)\n"
@@ -369,13 +370,13 @@ public class CommandLine {
     private void renterPopularComments() {
       String query = "SELECT a.lid, a.rentercomment, a.hostcomment, "
           + "MAX(a.count) as numOfOccurance FROM (SELECT lid, rentercomment, "
-          + "hostcomment, count(*) as count FROM booking group by lid order by "
-          + "count desc, lid) a group by a.lid order by numOfOccurance desc";
+          + "hostcomment, count(*) as count FROM booking group by lid, rentercomment order by "
+          + "count desc) a group by a.lid order by numOfOccurance desc, lid";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -383,7 +384,7 @@ public class CommandLine {
       String year;
       System.out.println("Please enter the year:\n");
       year = sc.nextLine();
-      String query = "SELECT uid, utype, count(*) as numOfCancel FROM booking "
+      String query = "SELECT uid, utype as 'Renter:0 Host:1', count(*) as numOfCancel FROM booking "
           + "NATURAL JOIN user WHERE cancelation = 0 and checkin >= '"
           + year + "-01-01' and checkout < '"
           + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and utype = 0 "
@@ -408,7 +409,7 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -424,7 +425,7 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -440,12 +441,12 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
     private void commercialHost() {
-      String query = "SELECT b.hid, b.city, b.country FROM (SELECT count(*) "
+      String query = "SELECT b.hid as commercialHost, b.city, b.country FROM (SELECT count(*) "
           + "as countTotal, city, country From listing Group BY city, country) "
           + "a, (SELECT count(*) as countHost, hid, city, country From listing "
           + "Group BY hid, city, country) b WHERE a.city = b.city and a.country "
@@ -454,33 +455,30 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
     private void rankHostByCity() {
       String query = "SELECT hid, city, country, count(*) as numListings FROM "
-          + "listing group by city, country, hid order by numListings DESC;";
+          + "listing group by city, country, hid order by numListings DESC, hid";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
     private void rankHostPerCountry() {
       String query = "SELECT hid, country, count(*) as "
           + "numListings FROM listing group by country, hid ORDER BY "
-          + "numListings DESC;";
+          + "numListings DESC, hid;";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -491,8 +489,7 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -503,8 +500,7 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -514,8 +510,7 @@ public class CommandLine {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
      } catch (Exception e) {
-         
-         System.out.println("Does not exist such report format.");
+       System.out.println("Does not exist such report format.");
      }
   }
 
@@ -531,12 +526,11 @@ public class CommandLine {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
            printlist(ans);
        } catch (Exception e) {
-           
-           System.out.println("Does not exist such report format.");
+         System.out.println("Does not exist such report format.");
        }
     }
   
-	 public void bookingSpecificDateCityReport() {
+	 private void bookingSpecificDateCityReport() {
 		 String start, end;
 		 System.out.println("Please enter the starting date(yyyy-mm-dd):\n");
          start = sc.nextLine();
@@ -548,7 +542,7 @@ public class CommandLine {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			printlist(ans);
 		} catch (Exception e) {
-			System.out.println("Does not exist such report format.");
+		  System.out.println("Does not exist such report format.");
 		}
 	 }
 	 
