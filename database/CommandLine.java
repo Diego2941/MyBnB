@@ -178,6 +178,7 @@ public class CommandLine {
 				              + "6. (comment)\n"
 				              + "7. (rate)\n"
 				              + "8. (remove listing)\n"
+				              + "9. (create listing by Host ToolKit)\n"
 				              + "back. (back to previous page):";
 					break;
 				default:
@@ -271,6 +272,9 @@ public class CommandLine {
 		          case "8":
 		        	  removeListing();
 		        	  break;
+		          case "9":
+                    createListByToolKit();
+                    break;
 		          case "h":
 		            help("Host");
 		            break;
@@ -286,7 +290,66 @@ public class CommandLine {
 	   }
 	
 	
-	private String getLd(String[] vals) {
+	private void createListByToolKit() {
+	  String[] vals = new String[9];
+	  String apply;
+	  System.out.println("Please enter the type of listing");
+	  vals[2] = sc.nextLine();
+	  System.out.println("Please enter the city");
+      vals[4] = sc.nextLine();
+      System.out.println("Please enter the country");
+      vals[5] = sc.nextLine();
+      String query = "SELECT AVG(price) FROM listing NATURAL JOIN calendar "
+          + "Where ltype = '" + vals[2] + "' and city = '" + vals[4] + "' and country = '"
+          + vals[5] + "'";
+      try {
+        ArrayList<ArrayList<String>> ans = sql.executequery(query);
+        String price = ans.get(1).get(0);
+        if (price == null) {
+          System.out.println("There is no similar listing before");
+        }else {
+          System.out.println("The average price of similar listing in this "
+              + "city is: " + price);
+          System.out.println("Do you want to apply this price annually for your listing?"
+              + " Enter (y/n): ");
+          apply = sc.nextLine();
+          while (!(apply.equals("y") || apply.equals("n"))) {
+            System.out.println("Invalid input, please enter y or n: ");
+            apply = sc.nextLine();
+          }
+          String[] calendarValue = new String[4];
+          if (apply.equals("n")) {
+            System.out.println("Please enter the prefer anually price: ");
+            price = sc.nextLine();
+          }
+          System.out.println("Now please finalize the information for new listing: ");
+          System.out.print("Name: ");
+          vals[0] = sc.nextLine();
+          System.out.print("Address: ");
+          vals[3] = sc.nextLine();
+          System.out.print("Postal Code: ");
+          vals[6] = sc.nextLine();
+          System.out.print("Latitude: ");
+          vals[7] = sc.nextLine();
+          System.out.print("Longitude: ");
+          vals[8] = sc.nextLine();
+          vals[1] = userid;
+          createListing(vals);
+          String lid = getLd(vals);
+          ammenitiesInput(lid);
+          calendarValue[0] = lid;
+          calendarValue[1] = "" + getdate();
+          calendarValue[2] = "" + getdate().plusYears(1);
+          calendarValue[3] = price;
+          createCalendar(calendarValue);
+        }
+      } catch (Exception e) {
+        // need change
+        System.out.println(e);
+      }
+  }
+
+  private String getLd(String[] vals) {
 		String query = "SELECT lid "
 				+ "FROM listing "
 				+ "WHERE name = " + "'" + vals[0] + "' AND "
@@ -302,7 +365,6 @@ public class CommandLine {
 			
 			query = sql.executequery(query).get(1).get(0);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return query;
@@ -856,7 +918,6 @@ public class CommandLine {
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -918,7 +979,6 @@ public class CommandLine {
 			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -993,7 +1053,6 @@ public class CommandLine {
 			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -1007,7 +1066,6 @@ public class CommandLine {
 			
 			sql.insertop(query);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.out.println("ID can not be updated.");
 		}
