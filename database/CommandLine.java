@@ -384,12 +384,12 @@ public class CommandLine {
       System.out.println("Please enter the year:\n");
       year = sc.nextLine();
       String query = "SELECT uid, utype, count(*) as numOfCancel FROM booking "
-          + "NATURAL JOIN user WHERE cancelation = 1 and checkin >= '"
+          + "NATURAL JOIN user WHERE cancelation = 0 and checkin >= '"
           + year + "-01-01' and checkout < '"
           + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and utype = 0 "
               + "group by uid HAVING numOfCancel = (SELECT MAX(a.count) as "
               + "numOfCancel FROM (SELECT count(*) as count FROM booking NATURAL"
-              + " JOIN user WHERE cancelation = 1 and checkin >= '"
+              + " JOIN user WHERE cancelation = 0 and checkin >= '"
               + year + "-01-01' and checkout < '"
               + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and "
                   + "utype = 0 GROUP BY uid) a) "
@@ -419,7 +419,7 @@ public class CommandLine {
       System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
       end = sc.nextLine();
       String query = "SELECT uid, city, count(*) as numBookings FROM booking Natural Join listing WHERE checkin >= '"
-               + start + "' and checkout < '" + end + "' and cancelation = 0 group by uid, city order by numBookings DESC";
+               + start + "' and checkout < '" + end + "' and cancelation IS NULL group by uid, city order by numBookings DESC";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
@@ -435,7 +435,7 @@ public class CommandLine {
       System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
       end = sc.nextLine();
       String query = "SELECT uid, count(*) as numBookings FROM booking WHERE checkin >= '"
-               + start + "' and checkout <= '" + end + "' group by uid order by numBookings DESC";
+               + start + "' and checkout <= '" + end + "' and cancelation IS NULL group by uid order by numBookings DESC";
       try {
          ArrayList<ArrayList<String>> ans = sql.executequery(query);
          printlist(ans);
@@ -526,7 +526,7 @@ public class CommandLine {
         System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
         end = sc.nextLine();
         String query = "SELECT count(postcode) as '#Bookings', postcode, city FROM booking Natural Join listing WHERE checkin >= '"
-                 + start + "' and checkout <= '" + end + "' group by city, postcode;";
+                 + start + "' and checkout <= '" + end + "' and cancelation is NULL group by city, postcode;";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
            printlist(ans);
@@ -543,7 +543,7 @@ public class CommandLine {
          System.out.println("Please enter the ending date(yyyy-mm-dd):\n");
          end = sc.nextLine();
          String query = "SELECT count(*) as '#Bookings', city FROM booking Natural Join listing WHERE checkin >= '"
-        	      + start + "' and checkout <= '" + end + "' group by city;";
+        	      + start + "' and checkout <= '" + end + "' and cancelation is NULL group by city;";
          try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			printlist(ans);
