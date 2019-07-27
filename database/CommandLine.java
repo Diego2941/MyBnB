@@ -213,10 +213,11 @@ public class CommandLine {
 		              bookingInput();
 		              break;
 		          case "4":
-		        	  cancelBooking();
+		        	  cancelBooking("0");
 		              break;
 		          case "5":
-		              
+		        	  String[] query = {};
+		              createCalendar(query);
 		              break;
 		          case "6":
 		        	  
@@ -248,12 +249,13 @@ public class CommandLine {
 		              line = "back";
 		              break;
 		          case "2":
-						listingInput();
-						ammenitiesInput();
-						calendarInput();
+						String[] vals = listingInput();
+						String lid = getLd(vals);
+						ammenitiesInput(lid);
+						calendarInput(lid);
 		              break;
 		          case "3":
-		              cancelBooking();
+		              cancelBooking("1");
 		              break;
 		          case "4":
 		              changePrice();
@@ -284,6 +286,28 @@ public class CommandLine {
 	   }
 	
 	
+	private String getLd(String[] vals) {
+		String query = "SELECT lid "
+				+ "FROM listing "
+				+ "WHERE name = " + "'" + vals[0] + "' AND "
+				+ "hid = " + "'" + vals[1] + "' AND "
+				+ "ltype = " + "'" + vals[2] + "' AND "
+				+ "address = " + "'" + vals[3] + "' AND "
+				+ "city = " + "'" + vals[4] + "' AND "
+				+ "country = " + "'" + vals[5] + "' AND "
+				+ "postcode = " + "'" + vals[6] + "' AND "
+				+ "latitude = " + "'" + vals[7] + "' AND "
+				+ "longitude = " + "'" + vals[8] + "'";
+		try {
+			System.out.println(query);
+			query = sql.executequery(query).get(1).get(0);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return query;
+	}
+
 	public void reportOperation() {
 	      // ask for inputs
 	      String line = "";
@@ -553,7 +577,6 @@ public class CommandLine {
                  + "postcode int, "
                  + "latitude float, "
                  + "longitude float, "
-                 + "aid int, "
                  + "PRIMARY KEY (lid), "
                  + "FOREIGN KEY (hid) REFERENCES user(uid) "
                  + " ON DELETE CASCADE)";
@@ -575,16 +598,17 @@ public class CommandLine {
          			+ " ON DELETE CASCADE)";
             
          vals[3] = "CREATE TABLE IF NOT EXISTS "
-                    + "calendar(lid int NOT NULL AUTO_INCREMENT, "
+                    + "calendar(lid int, "
                     + "startdate date, "
                     + "enddate date, "
                     + "price float, "
+                    + "type bool, "
                     + "PRIMARY KEY (lid, startdate, enddate), "
                     + "FOREIGN KEY (lid) REFERENCES listing(lid)"
                     + " ON DELETE CASCADE)";
         
          vals[4] = "CREATE TABLE IF NOT EXISTS "
-        		+ "amenity(lid int NOT NULL AUTO_INCREMENT, "
+        		+ "amenity(lid int, "
         		+ "wifi bool, "
         		+ "tv bool, "
         		+ "parking bool, "
@@ -641,24 +665,24 @@ public class CommandLine {
 	}
 	
 	public void bookingInput() {
-		String[] vals = new String[7];
+		String[] vals = new String[6];
 		System.out.print("ListingID ");
 		vals[0] = sc.nextLine();
 		System.out.print("Checkin: ");
 		vals[2] = sc.nextLine();
 		System.out.print("Checkout: ");
 		vals[3] = sc.nextLine();
-		vals[1] = "";
-		vals[4] = "0";
+		vals[1] = userid;
+		vals[4] = "";
 		vals[5] = "";
-		vals[6] = "";
 		createBooking(vals);
 	}
 	
 	
 	public void createBooking(String[] vals){
+		splitCalendar(vals[0], vals[2], vals[3]);
 		String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
-				+ "cancellation, hostcomment, rentercomment) VALUES(";
+				+ "hostcomment, rentercomment) VALUES(";
 		query = getQuery(query, vals);
 		try {
 				sql.insertop(query);
@@ -672,12 +696,12 @@ public class CommandLine {
 	}
 
 	
-	public void cancelBooking() {
+	public void cancelBooking(String num) {
 		String query = "SELECT * "
 				+ "FROM booking "
 				+ "WHERE uid = " + "'" + userid + "' AND " 
 				+ " checkin >= CURDATE() AND "
-						+ "cancelation = 0";
+						+ "cancelation = " + "'" + num + "'";
 		try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			if (ans.size() > 1) {
@@ -705,7 +729,7 @@ public class CommandLine {
 	}
 
 	
-	public void listingInput() {
+	public String[] listingInput() {
 		String[] vals = new String[9];
 		System.out.print("Name: ");
 		vals[0] = sc.nextLine();
@@ -725,6 +749,7 @@ public class CommandLine {
 		vals[8] = sc.nextLine();
 		vals[1] = userid;
 		createListing(vals);
+		return vals;
 	}
 	
 	public void createListing(String[] vals) {
@@ -758,15 +783,15 @@ public class CommandLine {
 		
 	}
 	
-	public void ammenitiesInput() {
+	public void ammenitiesInput(String lid) {
 		System.out.println("Amenities: ");
 		String[] vals = sc.nextLine().split(",");
-		createAmmenities(vals);
+		createAmmenities(vals, lid);
 	}
 	
-	public void createAmmenities(String[] vals) {
-		String query = "INSERT INTO amenity(wifi, tv, parking, gym, "
-				+ "pool, kitchen) VALUES(";
+	public void createAmmenities(String[] vals, String lid) {
+		String query = "INSERT INTO amenity(lid, wifi, tv, parking, gym, "
+				+ "pool, kitchen) VALUES(" + "'" + lid +"', ";
 
 		query = getQuery(query, vals);
 		try {
@@ -778,26 +803,138 @@ public class CommandLine {
 		}
 	}
 	
-	public void calendarInput() {
-		String vals[] = new String[3];
+	public String[] calendarUpdateInput(){
+		String[] vals = new String[4];
+		System.out.println("ListingID: ");
+		vals[1] = sc.nextLine();
+		System.out.println("Start Date: ");
+		vals[2] = sc.nextLine();
+		System.out.println("End Date: ");
+		vals[3] = sc.nextLine();
+		vals[0] = "1";
+		return vals;
+	}
+	
+	public void calendarUpdate(String[] vals) {
+		String query = "UPDATE calendar SET type = " + "'" + vals[0] + "' "
+				+ "WHERE lid = " + "'" + vals[1] + "' AND "
+						+ "startdate = " + "'" + vals[2] + "' AND"
+								+ "enddate = " + "'" + vals[3] + "'";
+		try {
+			sql.insertop(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void calendarInput(String lid) {
+		String vals[] = new String[4];
 		System.out.println("Anual for a year starting from today: ");
 		String year = sc.nextLine();
-		vals[0] = "" + getdate();
-		vals[1] = "" + getdate().plusYears(1);
-		vals[2] = year;
+		vals[0] = lid;
+		vals[1] = "" + getdate();
+		vals[2] = "" + getdate().plusYears(1);
+		vals[3] = year;
 		createCalendar(vals);
 	}
 	
+	public void mergeCalendar(String id, String start, String end) {
+		String query = "SELECT MAX(startdate), MIN(enddate) "
+				+ "FROM calendar "
+				+ "WHERE lid =" + "'" + id + "' AND "
+				+ "type = null AND startdate <= " + "'" + start + "' AND "
+						+ " enddate >= " + "'" + end + "'";
+		
+		try {
+			ArrayList<ArrayList<String>> ans = sql.executequery(query);
+			query = "DELETE "
+					+ "FROM calendar "
+					+ "WHERE lid =" + "'" + id + "' AND "
+							+ "type = null AND startdate <= " + "'" + ans.get(0).get(0) + "' AND "
+							+ " enddate >= " + "'" + ans.get(1).get(1) + "'";
+			sql.insertop(query);
+			String[] vals = {ans.get(0).get(0), ans.get(1).get(1), "1000"};
+			createCalendar(vals);
+			String[] valss = {null, ans.get(0).get(0), ans.get(1).get(1)};
+			calendarUpdate(valss);
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void splitCalendar(String id, String start, String end) {
+		String query = "SELECT MAX(startdate)"
+				+ "FROM calendar "
+				+ "WHERE lid =" + "'" + id + "' AND "
+				+ "type IS NULL AND startdate <= " + "'" + start + "'";
+		
+
+		try {
+			System.out.println(query);
+			String firststart = sql.executequery(query).get(1).get(0);
+			query = "SELECT MIN(enddate)"
+					+ "FROM calendar "
+					+ "WHERE lid =" + "'" + id + "' AND "
+					+ "type IS NULL AND enddate >= " + "'" + end + "'";
+			System.out.println(query);
+			String secondend = sql.executequery(query).get(1).get(0);
+			
+			String date = sql.executequery("SELECT DATE_SUB(" + "\"" + start + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
+			String[] vals = {id, firststart, date, "1000"};
+			createCalendar(vals);
+			
+			date = sql.executequery("SELECT DATE_ADD(" + "\"" + end + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);;
+			String[] valss = {id, date, secondend, "1000"};
+			createCalendar(valss);
+			
+			query = "DELETE "
+					+ "FROM calendar "
+					+ "WHERE lid =" + "'" + id + "' AND "
+							+ "type IS NULL AND startdate = " + "'" + firststart + "' AND "
+							+ " enddate = " + "'" + secondend + "'";
+			
+			System.out.println(query);
+			sql.insertop(query);
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void calendarUpdateID(String[] vals) {
+		String query = "UPDATE calendar SET lid = " + "'" + vals[0] + "' "
+				+ "WHERE type = null "
+						+ "startdate = " + "'" + vals[1] + "' AND"
+								+ "enddate = " + "'" + vals[2] + "'";
+		try {
+			System.out.println(query);
+			sql.insertop(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("ID can not be updated.");
+		}
+	}
+	
 	public void createCalendar(String[] vals) {
-		String query = "INSERT INTO calendar(startdate, "
+		String query = "INSERT INTO calendar(lid, startdate, "
 				+ "enddate, price) VALUES(";
 		query = getQuery(query, vals);
+		System.out.println(query);
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
 			System.out.println("Date format was wrong");
 		}
 	}
+
 	
 	public String getQuery(String query, String[] vals) {
 		int counter;
@@ -820,15 +957,6 @@ public class CommandLine {
 			System.out.println("User can not be deleted.");
 		}
 		
-	}
-	
-	public void checkAvaible() {
-		String query = "SELECT * "
-				+ "FROM  listing "
-				+ "WHERE not exists (SELECT 1"
-				+ "FROM bookings "
-				+ "WHERE listing.lid = booking.lid and"
-				+ "";
 	}
 	
 	
