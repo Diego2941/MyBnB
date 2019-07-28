@@ -158,7 +158,7 @@ public class Report {
           String query = "SELECT a.lid, a.rentercomment, a.hostcomment, "
               + "MAX(a.count) as numOfOccurance FROM (SELECT lid, rentercomment, "
               + "hostcomment, count(*) as count FROM booking group by lid, rentercomment order by "
-              + "count desc) a group by a.lid order by numOfOccurance desc, lid";
+              + "count desc) a WHERE rentercomment IS NOT NULL group by a.lid order by lid";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
              System.out.println("Most popular comments from renters");
@@ -182,23 +182,24 @@ public class Report {
                   + year + "-01-01' and checkout < '"
                   + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' and "
                       + "utype = 0 GROUP BY uid) a) "
-                  + "UNION SELECT uid, utype, count(*) as numOfCancel FROM booking "
-                  + "NATURAL JOIN user WHERE cancelation = 1 and checkin >= '"
+                  + "UNION SELECT uid, utype as 'Renter:0 Host:1', numOfCancel "
+                  + "FROM (SELECT hid, count(*) as numOfCancel FROM booking "
+                  + "NATURAL JOIN listing WHERE cancelation = 1 and checkin >= '"
                   + year + "-01-01' and checkout < '"
                   + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' "
-                      + "and utype = 1 group "
+                      + "group "
                   + "by uid HAVING numOfCancel = (SELECT MAX(a.count) as numOfCancel"
                   + " FROM (SELECT count(*) as count FROM booking NATURAL JOIN user "
                   + "WHERE cancelation = 1 and checkin >= '"
                   + year + "-01-01' and checkout < '"
                   + Integer.toString((Integer.parseInt(year)+1)) + "-01-01' "
-                      + "and utype = 1 GROUP BY uid) a)";
+                      + " GROUP BY uid) a)) b JOIN user where hid = uid";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
              System.out.println("Hosts and renters with the largest number of cancellation within a specified year:");
              CommandLine.printlist(ans);
          } catch (Exception e) {
-           System.out.println("Does not exist such report format.");
+           System.out.println(e);
          }
       }
 }
