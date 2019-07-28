@@ -14,7 +14,7 @@ public class Booking {
 	}
 	
 	public void createBooking(String[] vals){
-		calendar.splitCalendar("0", vals[0], vals[2], vals[3]);
+		calendar.splitCalendar("1", vals[0], vals[2], vals[3]);
 		String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
 				+ "hostcomment, rentercomment) VALUES(";
 		query = CommandLine.getQuery(query, vals);
@@ -45,7 +45,7 @@ public class Booking {
 			CommandLine.printlist(ans);
 			if (ans.get(1).get(0) != "null") {
 				if (calendar.checkAvaible(vals[0], vals[1], vals[2])) {
-					calendar.mergeCalendar(num, vals[0], vals[1], vals[2]);
+					calendar.mergeCalendar(vals[0], vals[1], vals[2]);
 					query = "UPDATE booking SET cancelation = " + "'" + num + "'"
 						+ "WHERE uid = " + "'" + CommandLine.userid + "' OR"
 								+ " lid = " + "'" + CommandLine.userid + "' AND "

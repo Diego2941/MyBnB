@@ -118,7 +118,7 @@ public class CommandLine {
 		            		userOperation();
 		            		break;
 		            	case "reports":
-		            		reportOperation();
+		            		adminOperation();
 		            		break;
 		            	case "exit":
 		                    System.out.println("Thanks for visiting!");
@@ -139,17 +139,6 @@ public class CommandLine {
 		}
 	}
 	
-	public static void printlist(ArrayList<ArrayList<String>> lst) {
-		System.out.println("\n-----------------------------------------------");
-		for (int i = 0; i < lst.size(); i++) {
-			for (int j = 0; j < lst.get(i).size(); j++) {
-				System.out.print(String.format("|%-20s|", lst.get(i).get(j)));
-			}
-			System.out.println("");
-		}
-		System.out.println("-----------------------------------------------\n");
-	}
-	
 	public void userOperation() {
 		String[] user = login();
 		String query = "SELECT uid, name, utype\n"
@@ -158,6 +147,7 @@ public class CommandLine {
 				+ " AND password= "
 				+ "'" + user[1] + "'";
 		try {
+			System.out.println(query);
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			if (ans.get(1).get(0) != null) {
 				userid = ans.get(1).get(0);
@@ -173,61 +163,24 @@ public class CommandLine {
 			}
 			
 		} catch (Exception e) {
+			e.getStackTrace();
 			System.out.println("The username or password is incorrect"
 					+ "please try again!.");
 		}
 		
 	}
 	
-    public void help(String str) {
-			String ans = "";
-			switch(str) {
-				case "Report":
-					ans = "1. (bookings in specified date range by city)\n"
-			              + "2. (bookings by postal code in specified date range within city)\n"
-			              + "3. (listings by country)\n"
-			              + "4. (listings by country and city)\n"
-			              + "5. (listings by country, city and postal code)\n"
-			              + "6. (rank host by number of listings per country)\n"
-			              + "7. (rank host on number of listings by city)\n"
-			              + "8. (commercial hosts by country and city)\n"
-			              + "9. (renters rank by number of bookings within a specified time)\n"
-			              + "10. (renters rank by number of bookings within a specified time per city)\n"
-			              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
-			              + "12. (most popular comments from renters)\n"
-			              + "back. (back to previous page):\n======================================";
-					break;
-				case "Renter":
-					ans = "1. (delete account)\n"
-					        + "2. (search)\n"
-					        + "3. (create booking)\n"
-					        + "4. (cancel booking)\n"
-					        + "5. (comment)\n"
-					        + "6. (rate)\n"
-					        + "back. (back to previous page):";
-					break;
-				case "Host":
-					ans = "1. (delete account)\n"
-				              + "2. (create listing)\n"
-				              + "3. (cancel booking)\n"
-				              + "4. (change price)\n"
-				              + "5. (change availability)\n"
-				              + "6. (comment)\n"
-				              + "7. (rate)\n"
-				              + "8. (remove listing)\n"
-				              + "9. (create listing by Host ToolKit)\n"
-				              + "back. (back to previous page):";
-					break;
-				default:
-					ans = "sigup(Create account)\n"
-						+ "login(User operation)\n"
-						+ "reports(Admin operations)\n"
-						+ "exit(exit the program):\n";
-					break;
-			}
-
-			System.out.println(ans);
+	public void adminOperation() {
+		String[] user = login();
+		if (user[0].equals(admin) && user[1].equals(adminpassword)){
+			reportOperation();
 		}
+		else {
+			System.out.println("The username or password is incorrect"
+					+ "please try again!.");
+		}
+		
+	}
 	
 	public void renterOperation() {
 	      // ask for inputs
@@ -254,8 +207,7 @@ public class CommandLine {
 		        	  booking.cancelBooking("0", idAndTimeInput());
 		              break;
 		          case "5":
-		        	  String[] query = {};
-		              calendar.createCalendar(query);
+
 		              break;
 		          case "6":
 		        	  
@@ -298,8 +250,9 @@ public class CommandLine {
 		          case "4":
 		              calendar.changePrice(idAndTimeInput());
 		              break;
-		          case "5":
 		              
+		          case "5":
+		              calendar.changeAvaible(idAndTimeInput());
 		              break;
 		          case "6":
 		              
@@ -310,7 +263,7 @@ public class CommandLine {
 		        	  listing.removeListing();
 		        	  break;
 		          case "9":
-                    createListByToolKit();
+		        	  createListByToolKit();
                     break;
 		          case "h":
 		            help("Host");
@@ -318,6 +271,7 @@ public class CommandLine {
 		          case "back":
 		        	  System.out.println("Signing out.\n");
 		        	  username = "";
+		        	  userid = "";
 		              break;
 		          default:
 		              System.out.println("Invalid report. Please try again!");
@@ -325,6 +279,64 @@ public class CommandLine {
 	          }
 	      }
 	   }
+	
+	public void reportOperation() {
+	      // ask for inputs
+	      String line = "";
+	      while(! line.equalsIgnoreCase("back")) {
+	    	  System.out.println("Hi, " + admin + " ! \n"
+		              + "Please enter which operations to perform(" + "'h'" + "for help" + "'back'" + "for previos page):\n");
+	    	  
+	    	  line = sc.nextLine();
+	          switch(line) {
+		          case "1":
+		        	report.bookingSpecificDateCityReport();
+		              break;
+		          case "2":
+		        	  report.bookingSpecificDatePostal();
+		              break;
+		          case "3":
+		        	  report.listingCountry();
+		              break;
+		          case "4":
+		        	  report.listingCountryCity();
+		              break;
+		          case "5":
+		        	  report.listingCountryCityPost();
+		              break;
+		          case "6":
+		        	  report.rankHostPerCountry();
+		              break;
+		          case "7":
+		        	  report.rankHostByCity();
+		              break;
+		          case "8":
+		        	  report.commercialHost();
+		              break;
+		          case "9":
+		        	  report.rankRenterInTime();
+		              break;
+		          case "10":
+		        	  report.rankRenterTimePerCity();
+		              break;
+		          case "11":
+		            report.largeCancelInYear();
+	                break;
+		          case "12":
+                  report.renterPopularComments();
+                  break;
+		          case "back":
+		        	  System.out.println("Left from the reports page.");
+		              break;
+		          case "h":
+		            help("Report");
+		            break;
+		          default:
+		              System.out.println("Invalid report. Please try again!");
+		              break;
+	          }
+	      }
+	}
 	
 	
 	private void createListByToolKit() {
@@ -385,64 +397,6 @@ public class CommandLine {
         System.out.println(e);
       }
   }
-
-	public void reportOperation() {
-	      // ask for inputs
-	      String line = "";
-	      while(! line.equalsIgnoreCase("back")) {
-	    	  System.out.println("Hi, " + admin + " ! \n"
-		              + "Please enter which operations to perform(" + "'h'" + "for help" + "'back'" + "for previos page):\n");
-	    	  
-	    	  line = sc.nextLine();
-	          switch(line) {
-		          case "1":
-		        	report.bookingSpecificDateCityReport();
-		              break;
-		          case "2":
-		        	  report.bookingSpecificDatePostal();
-		              break;
-		          case "3":
-		        	  report.listingCountry();
-		              break;
-		          case "4":
-		        	  report.listingCountryCity();
-		              break;
-		          case "5":
-		        	  report.listingCountryCityPost();
-		              break;
-		          case "6":
-		        	  report.rankHostPerCountry();
-		              break;
-		          case "7":
-		        	  report.rankHostByCity();
-		              break;
-		          case "8":
-		        	  report.commercialHost();
-		              break;
-		          case "9":
-		        	  report.rankRenterInTime();
-		              break;
-		          case "10":
-		        	  report.rankRenterTimePerCity();
-		              break;
-		          case "11":
-		            report.largeCancelInYear();
-	                break;
-		          case "12":
-                    report.renterPopularComments();
-                    break;
-		          case "back":
-		        	  System.out.println("Left from the reports page.");
-		              break;
-		          case "h":
-		            help("Report");
-		            break;
-		          default:
-		              System.out.println("Invalid report. Please try again!");
-		              break;
-	          }
-	      }
-	}
 	 
 	 public  void initiateTables() {
 		 String[] vals = new String[5];
@@ -612,6 +566,56 @@ public class CommandLine {
 		calendar.createCalendar(vals);
 	}
 	
+	public void help(String str) {
+		String ans = "";
+		switch(str) {
+			case "Report":
+				ans = "1. (bookings in specified date range by city)\n"
+		              + "2. (bookings by postal code in specified date range within city)\n"
+		              + "3. (listings by country)\n"
+		              + "4. (listings by country and city)\n"
+		              + "5. (listings by country, city and postal code)\n"
+		              + "6. (rank host by number of listings per country)\n"
+		              + "7. (rank host on number of listings by city)\n"
+		              + "8. (commercial hosts by country and city)\n"
+		              + "9. (renters rank by number of bookings within a specified time)\n"
+		              + "10. (renters rank by number of bookings within a specified time per city)\n"
+		              + "11. (hosts and renters with the largest number of cancellation within a specified year)\n"
+		              + "12. (most popular comments from renters)\n"
+		              + "back. (back to previous page):\n======================================";
+				break;
+			case "Renter":
+				ans = "1. (delete account)\n"
+				        + "2. (search)\n"
+				        + "3. (create booking)\n"
+				        + "4. (cancel booking)\n"
+				        + "5. (comment)\n"
+				        + "6. (rate)\n"
+				        + "back. (back to previous page):";
+				break;
+			case "Host":
+				ans = "1. (delete account)\n"
+			              + "2. (create listing)\n"
+			              + "3. (cancel booking)\n"
+			              + "4. (change price)\n"
+			              + "5. (change availability)\n"
+			              + "6. (comment)\n"
+			              + "7. (rate)\n"
+			              + "8. (remove listing)\n"
+			              + "9. (create listing by Host ToolKit)\n"
+			              + "back. (back to previous page):";
+				break;
+			default:
+				ans = "sigup(Create account)\n"
+					+ "login(User operation)\n"
+					+ "reports(Admin operations)\n"
+					+ "exit(exit the program):\n";
+				break;
+		}
+
+		System.out.println(ans);
+	}
+	
 	public static String getQuery(String query, String[] vals) {
 		int counter;
 		for (counter = 0; counter < vals.length - 1; counter++) {
@@ -621,10 +625,20 @@ public class CommandLine {
 		return query;
 	}
 	
-	
 	public LocalDate getdate() {
 		LocalDate myObj = LocalDate.now();
 		return myObj;
+	}
+	
+	public static void printlist(ArrayList<ArrayList<String>> lst) {
+		System.out.println("\n-----------------------------------------------");
+		for (int i = 0; i < lst.size(); i++) {
+			for (int j = 0; j < lst.get(i).size(); j++) {
+				System.out.print(String.format("|%-20s|", lst.get(i).get(j)));
+			}
+			System.out.println("");
+		}
+		System.out.println("-----------------------------------------------\n");
 	}
 	
 }
