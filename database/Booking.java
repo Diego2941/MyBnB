@@ -43,7 +43,7 @@ public class Booking {
 				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 						+ "lid =" + "'" + vals[0] + "'))";
 		try {
-			System.out.println(query);
+			
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			if (ans.get(1).get(0) != "null") {
 				if (calendar.checkYourCalendar(vals[0], vals[1], vals[2])) {

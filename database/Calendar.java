@@ -58,7 +58,7 @@ public class Calendar {
 						+ "type IS NULL AND "
 						+ "startdate<= " + "'" + start + "' AND "
 								+ "enddate>= " + "'" + end + "'";
-		System.out.println(query);
+		
 		try {
 			if (sql.executequery(query).get(1).get(0) != null) {
 				return true;
@@ -76,7 +76,7 @@ public class Calendar {
 						+ "type =0 AND "
 						+ "startdate= " + "'" + start + "' AND "
 								+ "enddate= " + "'" + end + "'";
-		System.out.println(query);
+		
 		try {
 			if (sql.executequery(query).get(1).get(0) != null) {
 				return true;
@@ -128,7 +128,7 @@ public class Calendar {
 				+ "startdate >= " + "'" + start + "' AND "
 				+ "enddate <= " + "'" + end + "'";
 		try {
-			System.out.println(query);
+			
 			price = sql.executequery(query).get(1).get(0);
 			
 		} catch (Exception e) {
@@ -154,7 +154,7 @@ public class Calendar {
 		String query = "INSERT INTO calendar(lid, startdate, "
 				+ "enddate, price) VALUES(";
 		query = CommandLine.getQuery(query, vals);
-		System.out.println(query);
+		
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
@@ -170,14 +170,14 @@ public class Calendar {
 				+ "WHERE lid =" + "'" + id + "' AND "
 				+ "type IS NULL AND startdate <= " + "'" + start + "'";
 		
-			System.out.println(query);
+			
 			String firststart = sql.executequery(query).get(1).get(0);
 			query = "SELECT MIN(enddate)"
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' AND "
 					+ "type IS NULL AND enddate >= " + "'" + end + "'";
 			
-			System.out.println(query);
+			
 			String secondend = sql.executequery(query).get(1).get(0);
 			System.out.println(firststart + ":" + secondend);
 			String price = getPrice(id, firststart, secondend);
@@ -222,7 +222,7 @@ public class Calendar {
 				+ "WHERE lid =" + "'" + id + "' AND "
 				+ "type IS NOT NULL AND enddate < " + "'" + start + "'";
 		
-			System.out.println(query);
+			
 			String firstend = sql.executequery(query).get(1).get(0);
 			
 			query = "SELECT MIN(startdate)"
@@ -230,7 +230,7 @@ public class Calendar {
 					+ "WHERE lid =" + "'" + id + "' AND "
 					+ "type IS NOT NULL AND startdate > " + "'" + end + "'";
 			
-			System.out.println(query);
+			
 			String secondstart = sql.executequery(query).get(1).get(0);
 			System.out.println(firstend + " : " + secondstart);
 			if (firstend != null) {
