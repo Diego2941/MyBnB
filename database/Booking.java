@@ -17,7 +17,7 @@ public class Booking {
 		try {
 			calendar.splitCalendar("1", vals[0], vals[2], vals[3]);
 			String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
-				+ "hostcomment, rentercomment) VALUES(";
+				+ ") VALUES(";
 			query = CommandLine.getQuery(query, vals);
 			if (calendar.checkAvaible(vals[0], vals[2], vals[3])) {
 				sql.insertop(query);
