@@ -60,6 +60,7 @@ public class Calendar {
 								+ "enddate>= " + "'" + end + "'";
 		
 		try {
+			System.out.println(query);
 			if (sql.executequery(query).get(1).get(0) != null) {
 				return true;
 			}
@@ -164,7 +165,6 @@ public class Calendar {
 	
 	public void splitCalendar(String user, String id, String start, String end) throws Exception {
 		String date;
-		System.out.println(start + ":" + end);
 		String query = "SELECT MAX(startdate)"
 				+ "FROM calendar "
 				+ "WHERE lid =" + "'" + id + "' AND "
@@ -176,7 +176,6 @@ public class Calendar {
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' AND "
 					+ "type IS NULL AND enddate >= " + "'" + end + "'";
-			
 			
 			String secondend = sql.executequery(query).get(1).get(0);
 			System.out.println(firststart + ":" + secondend);
@@ -193,7 +192,7 @@ public class Calendar {
 				String[] before = {id, date, secondend, price};
 				createCalendar(before);	
 			}
-			
+			System.out.println(firststart + ":" + secondend);
 			if (!secondend.equals(end) || !firststart.equals(start)) {
 				String[] book = {id, start, end, price};
 				createCalendar(book);
@@ -232,7 +231,6 @@ public class Calendar {
 			
 			
 			String secondstart = sql.executequery(query).get(1).get(0);
-			System.out.println(firstend + " : " + secondstart);
 			if (firstend != null) {
 				firstend = sql.executequery("SELECT DATE_ADD(" + "\"" + firstend + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
 			}
@@ -249,7 +247,6 @@ public class Calendar {
 			}
 			
 			String price = getPrice(id, firstend, secondstart);
-			System.out.println(firstend + " : " + secondstart);
 			query = "DELETE "
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' AND "

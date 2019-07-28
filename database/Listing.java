@@ -61,7 +61,6 @@ public class Listing {
 	
 	public void removeListing() {
 		System.out.println("ListingId you want to remove: ");
-		getListing();
 		String id = sc.nextLine();
 		String query = "DELETE "
 				+ "FROM listing "

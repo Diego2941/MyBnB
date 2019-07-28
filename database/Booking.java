@@ -21,7 +21,6 @@ public class Booking {
 						+ ") VALUES(";
 				
 				query = CommandLine.getQuery(query, vals);
-				System.out.println(query);
 				sql.insertop(query);
 				System.out.println("Your booking has succesfully being completed!.");
 			}
@@ -34,6 +33,76 @@ public class Booking {
 					+ "does not exist!.");
 		}
 	}
+	
+	public String getBid(String[] vals) {
+		String query = "SELECT bid "
+				+ "FROM booking "
+				+ "WHERE lid =" +"'" + vals[0] + "' AND "
+				+ "checkin = " +"'" + vals[1] + "' AND "
+				+ "checkout = " +"'" + vals[2] + "'";
+		try {
+			System.out.println(query);
+			return sql.executequery(query).get(1).get(0);
+			
+		} catch (Exception e) {
+			return "0";
+		}
+	}
+	
+	public void checkBooking(String lid) {
+		String query = "SELECT * "
+				+ "FROM booking "
+				+ "WHERE checkin >= CURDATE() AND "
+				+ "cancelation IS NULL AND "
+				+ "(uid = " + "'" + CommandLine.userid + "' OR "
+				+ "EXISTS (SELECT lid FROM "
+				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
+				+ "lid =" + "'" + lid + "'))";
+		try {
+			CommandLine.printlist(sql.executequery(query));
+		} catch (Exception e) {
+			System.out.println("You dont have booking avaible.");
+		}
+	}
+	
+	public void prevBooking(String lid) {
+		String query = "SELECT * "
+				+ "FROM booking "
+				+ "WHERE checkout < CURDATE() AND "
+				+ "cancelation IS NULL AND "
+				+ "(uid = " + "'" + CommandLine.userid + "' OR "
+				+ "EXISTS (SELECT lid FROM "
+				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
+				+ "lid =" + "'" + lid + "'))"; 
+		try {
+			CommandLine.printlist(sql.executequery(query));
+		} catch (Exception e) {
+			System.out.println("You dont have previous bookings!.");
+		}
+	}
+	
+	public boolean isPrevS(String bid, String lid) {
+		String query = "SELECT * "
+				+ "FROM booking "
+				+ "WHERE checkout < CURDATE() AND "
+				+ "bid = " + "'" + bid + "' AND "
+				+ "cancelation IS NULL AND "
+				+ "(uid = " + "'" + CommandLine.userid + "' OR "
+				+ "EXISTS (SELECT lid FROM "
+				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
+				+ "lid =" + "'" + lid + "'))"; 
+		
+		try {
+			System.out.println(query);
+			 if (sql.executequery(query).get(1).get(0) != null){
+				 return true;
+			 }
+		} catch (Exception e) {
+			System.out.println("You dont have previos bookings!.");
+		}
+		return false;
+	}
+	
 	
 	public void cancelBooking(String num, String[] vals) {
 		String query = "SELECT * "

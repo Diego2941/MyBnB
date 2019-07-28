@@ -104,9 +104,9 @@ public class CommandLine {
 			initiateTables();
 //			MockData.mockUser(user);
 //			MockData.mockListing(listing);
-			MockData.mockCalendar(calendar);
+//			MockData.mockCalendar(calendar);
 //			MockData.mockAmenity(amenity);
-			MockData.mockBooking(booking);
+//			MockData.mockBooking(booking);
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
@@ -147,8 +147,8 @@ public class CommandLine {
 		String[] user = login();
 		String query = "SELECT uid, name, utype\n"
 				+ "FROM cscc43db.user \n"
-				+ "WHERE uid= " + user[0]
-				+ " AND password= "
+				+ "WHERE name= '" + user[0]
+				+ "' AND password= "
 				+ "'" + user[1] + "'";
 		try {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
@@ -210,12 +210,18 @@ public class CommandLine {
 		        	  booking.cancelBooking("0", idAndTimeInput());
 		              break;
 		          case "5":
-
+		        	  commentRankInput("rentercomment");
 		              break;
 		          case "6":
-		        	  
+		        	  commentRankInput("hostrank");
 		        	  break;
-		          
+		          case "7":
+		        	  booking.checkBooking("0");
+		        	  break;
+
+		          case "8":
+		        	  booking.prevBooking("0");
+		        	  break;
 		          case "back":
 		        	  System.out.println("Signing out.");
 		        	  username = "";
@@ -255,22 +261,31 @@ public class CommandLine {
 		          case "4":
 		              calendar.changePrice(idAndTimeInput());
 		              break;
-		              
 		          case "5":
 		              calendar.changeAvaible(idAndTimeInput());
 		              break;
 		          case "6":
-		              
+		        	  commentRankInput("hostcomment");
 		        	  break;
 		          case "7":
-		        	  
+		        	  commentRankInput("renterrank");
 		        	  break;
 		          case "8":
 		        	  listing.removeListing();
 		        	  break;
 		          case "9":
+		        	  listing.getListing();
+		        	  break;
+		          case "10":
 		        	  createListByToolKit();
                     break;
+                    
+		          case "11":
+		        	  booking.prevBooking(lidInput());
+		        	  break;
+		          case "12":
+		        	  booking.checkBooking(lidInput());
+		        	  break;
 		          case "h":
 		            help("Host");
 		            break;
@@ -344,6 +359,19 @@ public class CommandLine {
 	      }
 	}
 	
+	public void commentRankInput(String use) {
+		 System.out.print(use + ": ");
+	     String comment = sc.nextLine();
+	     String[] vals = idAndTimeInput();
+	     String bid = booking.getBid(vals);
+	     System.out.println(bid);
+	     if (booking.isPrevS(bid, vals[0])){
+	    	 user.addRankComment(use, comment, bid);
+	     }
+	     else {
+	    	 System.out.print("You can not comment or rank a booking that has not yet finished.");
+	     }
+	}
 	
 	private void createListByToolKit() {
 	  String[] vals = new String[9];
@@ -459,6 +487,8 @@ public class CommandLine {
                     + "cancelation bool, "
                     + "hostcomment varchar(255), "
                     + "rentercomment varchar(255), "
+                    + "hostrank int(1), "
+                    + "renterrank int(1), "
                     + "PRIMARY KEY (bid), "
          			+ "FOREIGN KEY (uid) REFERENCES user(uid)"
          			+ " ON DELETE CASCADE, "
@@ -491,6 +521,11 @@ public class CommandLine {
 				System.out.println("Tables can not be created.");
         }
     }
+	 
+	public String lidInput() {
+			System.out.println("Listing ID: ");
+			return sc.nextLine();
+	}
 	 
 	public void accountInput() {
 		String[] vals = new String[8];
@@ -611,6 +646,8 @@ public class CommandLine {
 				        + "4. (cancel booking)\n"
 				        + "5. (comment)\n"
 				        + "6. (rate)\n"
+				        + "7. (check your bookings)\n"
+				        + "8. (check previous bookings)\n"
 				        + "back. (back to previous page):";
 				break;
 			case "Host":
@@ -622,7 +659,10 @@ public class CommandLine {
 			              + "6. (comment)\n"
 			              + "7. (rate)\n"
 			              + "8. (remove listing)\n"
-			              + "9. (create listing by Host ToolKit)\n"
+			              + "9. (check your listings)\n"
+			              + "10. (create listing by Host ToolKit)\n"
+			              + "11. (check previos bookings by lid)\n"
+			              + "12. (check booking by lid)\n"
 			              + "back. (back to previous page):";
 				break;
 			default:
