@@ -56,6 +56,24 @@ public class Calendar {
 		String query = "SELECT * FROM calendar "
 				+ "WHERE lid = " + "'" + lid + "' AND "
 						+ "type IS NULL AND "
+						+ "startdate<= " + "'" + start + "' AND "
+								+ "enddate>= " + "'" + end + "'";
+		System.out.println(query);
+		try {
+			if (sql.executequery(query).get(1).get(0) != null) {
+				return true;
+			}
+		} catch (Exception e) {
+
+		}
+		
+		return false;
+	}
+	
+	public boolean checkYourCalendar(String lid, String start, String end) {
+		String query = "SELECT * FROM calendar "
+				+ "WHERE lid = " + "'" + lid + "' AND "
+						+ "type =0 AND "
 						+ "startdate= " + "'" + start + "' AND "
 								+ "enddate= " + "'" + end + "'";
 		System.out.println(query);
@@ -110,6 +128,7 @@ public class Calendar {
 				+ "startdate >= " + "'" + start + "' AND "
 				+ "enddate <= " + "'" + end + "'";
 		try {
+			System.out.println(query);
 			price = sql.executequery(query).get(1).get(0);
 			
 		} catch (Exception e) {
@@ -135,7 +154,7 @@ public class Calendar {
 		String query = "INSERT INTO calendar(lid, startdate, "
 				+ "enddate, price) VALUES(";
 		query = CommandLine.getQuery(query, vals);
-		
+		System.out.println(query);
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
@@ -222,13 +241,15 @@ public class Calendar {
 			}
 			
 			if (secondstart != null) {
-				secondstart = sql.executequery("SELECT DATE_ADD(" + "\"" + firstend + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
+				secondstart = sql.executequery("SELECT DATE_SUB(" + "\"" + secondstart + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
 			}
 			
 			else {
 				secondstart = sql.executequery("SELECT MAX(enddate) FROM calendar WHERE lid= " + "'" + id + "'").get(1).get(0);
 			}
-
+			
+			String price = getPrice(id, firstend, secondstart);
+			System.out.println(firstend + " : " + secondstart);
 			query = "DELETE "
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' AND "
@@ -237,10 +258,9 @@ public class Calendar {
 				
 				
 			sql.insertop(query);
-			String price = getPrice(id, firstend, secondstart);
 			String[] newSet = {id, firstend, secondstart, price};
 			createCalendar(newSet);
-			
+//			
 	}
 
 }

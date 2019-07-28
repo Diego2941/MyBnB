@@ -15,11 +15,11 @@ public class Booking {
 	
 	public void createBooking(String[] vals){
 		try {
-			calendar.splitCalendar("1", vals[0], vals[2], vals[3]);
-			String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
-				+ "hostcomment, rentercomment) VALUES(";
-			query = CommandLine.getQuery(query, vals);
 			if (calendar.checkAvaible(vals[0], vals[2], vals[3])) {
+				calendar.splitCalendar("0", vals[0], vals[2], vals[3]);
+				String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
+						+ "hostcomment, rentercomment) VALUES(";
+					query = CommandLine.getQuery(query, vals);
 				sql.insertop(query);
 				System.out.println("Your booking has succesfully being completed!.");
 			}
@@ -36,20 +36,25 @@ public class Booking {
 	public void cancelBooking(String num, String[] vals) {
 		String query = "SELECT * "
 				+ "FROM booking "
-				+ "WHERE uid = " + "'" + CommandLine.userid + "' AND " 
-				+ "checkin >= CURDATE() AND "
-				+ "cancelation IS NULL";
+				+ "WHERE checkin >= CURDATE() AND "
+				+ "cancelation IS NULL AND "
+				+ "(uid = " + "'" + CommandLine.userid + "' OR "
+				+ "EXISTS (SELECT lid FROM "
+				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
+						+ "lid =" + "'" + vals[0] + "'))";
 		try {
+			System.out.println(query);
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
-			CommandLine.printlist(ans);
 			if (ans.get(1).get(0) != "null") {
-				if (calendar.checkAvaible(vals[0], vals[1], vals[2])) {
+				if (calendar.checkYourCalendar(vals[0], vals[1], vals[2])) {
 					calendar.mergeCalendar(vals[0], vals[1], vals[2]);
 					query = "UPDATE booking SET cancelation = " + "'" + num + "'"
-						+ "WHERE uid = " + "'" + CommandLine.userid + "' OR"
-								+ " lid = " + "'" + CommandLine.userid + "' AND "
-								+ " checkin = " + "'" + vals[1] + "'" + " AND "
-										+ "checkout = " + "'" + vals[2] + "'"; 
+						+ "WHERE checkin = " + "'" + vals[1] + "'" + " AND "
+										+ "checkout = " + "'" + vals[2] + "' AND"
+												+ "(uid = " + "'" + CommandLine.userid + "' OR "  
+												+ "EXISTS (SELECT lid FROM "
+												+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
+														+ "lid =" + "'" + vals[0] + "'))"; 
 					sql.insertop(query);
 					System.out.println("You have succesfully cancel your booking!.");
 				}

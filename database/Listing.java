@@ -54,7 +54,6 @@ public class Listing {
 			sql.insertop(query);
 			System.out.println("Listing was succesfully created!.");
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("Listing can not be created may be cause "
 					+ "by the format please try again!.");
 		}
