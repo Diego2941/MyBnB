@@ -12,18 +12,13 @@ public class Calendar {
 		listing = lid;
 	}
 	
-	public void updatePrice(String price, String[] vals) {
+	public void updatePrice(String price, String[] vals) throws Exception {
 		String query = "UPDATE calendar SET price= " + "'" + price + "' "
 				+ "WHERE lid= " + "'" + vals[0] + "' AND "
 				+ "startdate= " + "'" + vals[1] + "' AND "
 				+ "enddate= " + "'" + vals[2] + "' ";
-		try {
-			System.out.println(query);
-			sql.insertop(query);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		sql.insertop(query);
 	}
 	
 	public void changePrice(String[] vals) {
@@ -31,7 +26,12 @@ public class Calendar {
 		if (checkAvaible(vals[0], vals[1], vals[2])) {
 			System.out.print("Newprice: ");
 			String price = sc.nextLine();
-			updatePrice(price, vals);
+			try {
+				updatePrice(price, vals);
+			} catch (Exception e) {
+				System.out.println("You can not change the price. It may be that "
+						+ " you do not have that listing or it is unavaible");
+			}
 		}
 		else {
 			System.out.println("You can not change the price. It may be that "
@@ -64,8 +64,7 @@ public class Calendar {
 				return true;
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 		
 		return false;
@@ -77,7 +76,6 @@ public class Calendar {
 				+ "startdate = " + "'" + vals[1] + "' AND "
 						+ "enddate = " + "'" + vals[2] + "' AND"
 								+ " (type IS NULL OR type = 1)";
-		System.out.println(query);
 		try {
 			CommandLine.printlist(sql.executequery(query));
 			if (sql.executequery(query).get(1).get(0) != null) {
@@ -87,14 +85,18 @@ public class Calendar {
 				else {
 					splitCalendar("1", vals[0], vals[1], vals[2]);
 				}
+				
+				System.out.println("You have succefully change the avaibility "
+						+ "of one of your listings.");	
+				
 			}
 			else {
 				System.out.println("You can not change avaibility that is"
 						+ " not in your listings.");	
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("The given input is not in correct format or "
+					+ "Days for the given id does not exists.");
 		}
 	}
 	
@@ -111,8 +113,7 @@ public class Calendar {
 			price = sql.executequery(query).get(1).get(0);
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 		return price;
 	}
@@ -126,7 +127,6 @@ public class Calendar {
 			
 			sql.insertop(query);
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("ID can not be updated.");
 		}
 	}
@@ -139,11 +139,11 @@ public class Calendar {
 		try {
 			sql.insertop(query);
 		} catch (Exception e) {
-			System.out.println("Date format was wrong");
+			System.out.println("Date format for calendar was wrong");
 		}
 	}
 	
-	public void splitCalendar(String user, String id, String start, String end) {
+	public void splitCalendar(String user, String id, String start, String end) throws Exception {
 		String date;
 		System.out.println(start + ":" + end);
 		String query = "SELECT MAX(startdate)"
@@ -151,7 +151,6 @@ public class Calendar {
 				+ "WHERE lid =" + "'" + id + "' AND "
 				+ "type IS NULL AND startdate <= " + "'" + start + "'";
 		
-		try {
 			System.out.println(query);
 			String firststart = sql.executequery(query).get(1).get(0);
 			query = "SELECT MIN(enddate)"
@@ -194,22 +193,16 @@ public class Calendar {
 				String[] update = {user, id, start, end};
 				calendarUpdate(update);
 			}
-			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 	
 
 	
-	public void mergeCalendar(String id, String start, String end) {
+	public void mergeCalendar(String id, String start, String end) throws Exception {
 		String query = "SELECT MAX(enddate)"
 				+ "FROM calendar "
 				+ "WHERE lid =" + "'" + id + "' AND "
 				+ "type IS NOT NULL AND enddate < " + "'" + start + "'";
 		
-		try {
 			System.out.println(query);
 			String firstend = sql.executequery(query).get(1).get(0);
 			
@@ -248,10 +241,6 @@ public class Calendar {
 			String[] newSet = {id, firstend, secondstart, price};
 			createCalendar(newSet);
 			
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }

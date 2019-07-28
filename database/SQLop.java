@@ -21,7 +21,6 @@ public class SQLop {
 		} catch (SQLException e) {
 			success = false;
 			System.err.println("Connection could not be established!");
-			e.printStackTrace();
 		}
 		return success;
 	}
@@ -40,13 +39,7 @@ public class SQLop {
 	}
 	
 	 public void insertop(String query)throws Exception{
-	    	try {
 		    	st.executeUpdate(query);
-		    	
-		    } catch (SQLException e) {
-		    	e.printStackTrace();
-
-		    }
 	 }
 
 	 

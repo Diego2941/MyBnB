@@ -184,7 +184,8 @@ public class Report {
                       + "and utype = 1 GROUP BY uid) a)";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
-             CommandLine.printlist(ans);
+             CommandLine.
+             printlist(ans);
          } catch (Exception e) {
            System.out.println("Does not exist such report format.");
          }

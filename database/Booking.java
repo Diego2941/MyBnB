@@ -14,20 +14,19 @@ public class Booking {
 	}
 	
 	public void createBooking(String[] vals){
-		calendar.splitCalendar("1", vals[0], vals[2], vals[3]);
-		String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
-				+ "hostcomment, rentercomment) VALUES(";
-		query = CommandLine.getQuery(query, vals);
 		try {
-				if (calendar.checkAvaible(vals[0], vals[2], vals[3])) {
-					sql.insertop(query);
-				}
-				else {
-					System.out.println("Sorry the listing you choose is not avaible in the given dates.");
-				}
+			calendar.splitCalendar("1", vals[0], vals[2], vals[3]);
+			String query = "INSERT INTO booking(lid, uid, checkin, checkout, "
+				+ "hostcomment, rentercomment) VALUES(";
+			query = CommandLine.getQuery(query, vals);
+			if (calendar.checkAvaible(vals[0], vals[2], vals[3])) {
+				sql.insertop(query);
+				System.out.println("Your booking has succesfully being completed!.");
+			}
+			else {
+				System.out.println("Sorry the listing you choose is not avaible in the given dates!.");
+			}
 		} catch (Exception e) {
-			
-			e.printStackTrace();
 			System.out.println("Booking can not be created may be cause "
 					+ "by the format please try again or isting"
 					+ "does not exist!.");
@@ -52,6 +51,7 @@ public class Booking {
 								+ " checkin = " + "'" + vals[1] + "'" + " AND "
 										+ "checkout = " + "'" + vals[2] + "'"; 
 					sql.insertop(query);
+					System.out.println("You have succesfully cancel your booking!.");
 				}
 				else {
 					System.out.println("You did not select any of your existing bookings.");

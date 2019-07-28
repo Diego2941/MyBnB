@@ -163,7 +163,7 @@ public class CommandLine {
 			}
 			
 		} catch (Exception e) {
-			e.getStackTrace();
+			
 			System.out.println("The username or password is incorrect"
 					+ "please try again!.");
 		}
@@ -241,8 +241,10 @@ public class CommandLine {
 		          case "2":
 						String[] vals = listingInput();
 						String lid = listing.getLd(vals);
-						ammenitiesInput(lid);
-						calendarInput(lid);
+						if (!lid.equals("0")){
+							ammenitiesInput(lid);
+							calendarInput(lid);
+						}
 		              break;
 		          case "3":
 		              booking.cancelBooking("1", idAndTimeInput());
@@ -258,6 +260,7 @@ public class CommandLine {
 		              
 		        	  break;
 		          case "7":
+		        	  
 		        	  break;
 		          case "8":
 		        	  listing.removeListing();

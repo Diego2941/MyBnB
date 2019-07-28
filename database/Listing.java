@@ -17,8 +17,8 @@ public class Listing {
 		try {
 			CommandLine.printlist(sql.executequery(query));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
+			System.out.print("Disi not found any listings in your account!.");
 		}
 		
 	}
@@ -38,10 +38,10 @@ public class Listing {
 		try {
 			
 			query = sql.executequery(query).get(1).get(0);
+			return query;
 		} catch (Exception e) {
-			e.printStackTrace();
+			return "0";
 		}
-		return query;
 	}
 	
 	public void createListing(String[] vals) {
@@ -52,6 +52,7 @@ public class Listing {
 		query = CommandLine.getQuery(query, vals);
 		try {
 			sql.insertop(query);
+			System.out.println("Listing was succesfully created!.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Listing can not be created may be cause "
@@ -61,6 +62,7 @@ public class Listing {
 	
 	public void removeListing() {
 		System.out.println("ListingId you want to remove: ");
+		getListing();
 		String id = sc.nextLine();
 		String query = "DELETE "
 				+ "FROM listing "
@@ -68,9 +70,9 @@ public class Listing {
 		
 		try {
 			sql.insertop(query);
+			System.out.println("The selected listing was succesfully deleted!.");
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("Listing can not be deleted.");
+			System.out.println("Listing can not be deleted!.");
 		}
 		
 	}

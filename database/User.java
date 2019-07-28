@@ -16,8 +16,8 @@ public class User {
 		query = CommandLine.getQuery(query, vals);
 		try {
 			sql.insertop(query);
+			System.out.println("You have succesfully created your accouunt!.");
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("Account can not be created may be cause "
 					+ "by the format please try again!.");
 		}
@@ -30,6 +30,7 @@ public class User {
 		
 		try {
 			sql.insertop(query);
+			System.out.println("You have succesfully deleted your accouunt!.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("User can not be deleted.");
