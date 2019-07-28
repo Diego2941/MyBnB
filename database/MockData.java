@@ -107,10 +107,8 @@ public class MockData {
       amenity.createAmmenities(l, "12");
     }
 	public static void mockCalendar(Calendar calendar) {
-      String [] a = {"1", "2018-09-01", "2018-12-12", "900"};
-      String [] b = {"1", "2019-09-01", "2020-09-01", "1000"};
-      String [] c = {"2", "2016-09-01", "2018-09-01", "600"};
-      String [] d = {"2", "2018-09-02", "2020-09-01", "800"};
+      String [] a = {"1", "2018-09-01", "2020-09-01", "900"};
+      String [] c = {"2", "2016-09-01", "2020-09-01", "600"};
       String [] e = {"3", "2019-09-01", "2020-09-01", "1000"};
       String [] f = {"4", "2019-09-01", "2020-09-01", "1000"};
       String [] g = {"5", "2019-09-01", "2020-09-01", "1000"};
@@ -122,9 +120,7 @@ public class MockData {
       String [] m = {"11", "2019-09-01", "2020-09-01", "1000"};
       String [] n = {"12", "2019-09-01", "2020-09-01", "1000"};
       calendar.createCalendar(a);
-      calendar.createCalendar(b);
       calendar.createCalendar(c);
-      calendar.createCalendar(d);
       calendar.createCalendar(e);
       calendar.createCalendar(f);
       calendar.createCalendar(g);
