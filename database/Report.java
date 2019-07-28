@@ -21,6 +21,7 @@ public class Report {
                  + start + "' and checkout < '" + end + "' and cancelation IS NULL group by uid, city order by numBookings DESC";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Rank renters by number of bookings within a specified time per city:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -37,6 +38,7 @@ public class Report {
                  + start + "' and checkout <= '" + end + "' and cancelation IS NULL group by uid order by numBookings DESC";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Rank renters by number of bookings within a specified time:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -51,6 +53,7 @@ public class Report {
             + "= b.country and b.countHost >= (a.countTotal/10)";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Commercial hosts by country and city:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println(e);
@@ -62,6 +65,7 @@ public class Report {
             + "listing group by city, country, hid order by numListings DESC, hid";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Host rank by number of listings by city:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -74,6 +78,7 @@ public class Report {
             + "numListings DESC, hid;";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Host rank by number of listings per country:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -85,6 +90,7 @@ public class Report {
             + "group by country, city order by country";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Total number of listings by country and city:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -96,6 +102,7 @@ public class Report {
             + "FROM listing group by country, city, postcode order by country";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Total number of listings by country, city and postal code:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -106,6 +113,7 @@ public class Report {
         String query = "SELECT count(*) as '#listing', country FROM listing group by country";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
+           System.out.println("Total number of listings by country:");
            CommandLine.printlist(ans);
        } catch (Exception e) {
          System.out.println("Does not exist such report format.");
@@ -122,6 +130,7 @@ public class Report {
                    + start + "' and checkout <= '" + end + "' and cancelation is NULL group by city, postcode;";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
+             System.out.println("Total # of bookings by postal code in specified date range within city:");
              CommandLine.printlist(ans);
          } catch (Exception e) {
            System.out.println("Does not exist such report format.");
@@ -138,6 +147,7 @@ public class Report {
           	      + start + "' and checkout <= '" + end + "' and cancelation is NULL group by city;";
            try {
   			ArrayList<ArrayList<String>> ans = sql.executequery(query);
+  			System.out.println("Total # of bookings in specified date range by city:");
   			CommandLine.printlist(ans);
   		} catch (Exception e) {
   		  System.out.println("Does not exist such report format.");
@@ -151,6 +161,7 @@ public class Report {
               + "count desc) a group by a.lid order by numOfOccurance desc, lid";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
+             System.out.println("Most popular comments from renters");
              CommandLine.printlist(ans);
          } catch (Exception e) {
            System.out.println("Does not exist such report format.");
@@ -184,8 +195,8 @@ public class Report {
                       + "and utype = 1 GROUP BY uid) a)";
           try {
              ArrayList<ArrayList<String>> ans = sql.executequery(query);
-             CommandLine.
-             printlist(ans);
+             System.out.println("Hosts and renters with the largest number of cancellation within a specified year:");
+             CommandLine.printlist(ans);
          } catch (Exception e) {
            System.out.println("Does not exist such report format.");
          }

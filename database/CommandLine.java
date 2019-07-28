@@ -652,14 +652,15 @@ public class CommandLine {
 	}
 	
 	public static void printlist(ArrayList<ArrayList<String>> lst) {
-		System.out.println("\n-----------------------------------------------");
+	  String str = "----------------------";
+		System.out.println(new String(new char[lst.get(0).size()]).replace("\0", str));
 		for (int i = 0; i < lst.size(); i++) {
 			for (int j = 0; j < lst.get(i).size(); j++) {
 				System.out.print(String.format("|%-20s|", lst.get(i).get(j)));
 			}
 			System.out.println("");
 		}
-		System.out.println("-----------------------------------------------\n");
+		System.out.println(new String(new char[lst.get(0).size()]).replace("\0", str));
 	}
 	
 }
