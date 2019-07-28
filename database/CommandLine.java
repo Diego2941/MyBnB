@@ -104,9 +104,9 @@ public class CommandLine {
 			initiateTables();
 //			MockData.mockUser(user);
 //			MockData.mockListing(listing);
-			MockData.mockCalendar(calendar);
+//			MockData.mockCalendar(calendar);
 //			MockData.mockAmenity(amenity);
-			MockData.mockBooking(booking);
+//			MockData.mockBooking(booking);
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
