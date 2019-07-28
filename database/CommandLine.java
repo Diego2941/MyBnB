@@ -102,7 +102,7 @@ public class CommandLine {
 			System.out.println("******Welcome to MyBnB*******");
 			System.out.println("*****************************\n");
 			initiateTables();
-			//mock();
+			//MockData.mock(user);
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
@@ -342,6 +342,7 @@ public class CommandLine {
 	private void createListByToolKit() {
 	  String[] vals = new String[9];
 	  String apply;
+	  System.out.println("Welcome to Host ToolKit!");
 	  System.out.println("Please enter the type of listing");
 	  vals[2] = sc.nextLine();
 	  System.out.println("Please enter the city");
@@ -355,7 +356,9 @@ public class CommandLine {
         ArrayList<ArrayList<String>> ans = sql.executequery(query);
         String price = ans.get(1).get(0);
         if (price == null) {
-          System.out.println("There is no similar listing before");
+          System.out.println("No suggestion price, since there is no similar listing before");
+          System.out.println("Please enter the prefer anually price: ");
+          price = sc.nextLine();
         }else {
           System.out.println("The average price of similar listing in this "
               + "city is: " + price);
@@ -366,35 +369,48 @@ public class CommandLine {
             System.out.println("Invalid input, please enter y or n: ");
             apply = sc.nextLine();
           }
-          String[] calendarValue = new String[4];
           if (apply.equals("n")) {
             System.out.println("Please enter the prefer anually price: ");
             price = sc.nextLine();
           }
-          System.out.println("Now please finalize the information for new listing: ");
-          System.out.print("Name: ");
-          vals[0] = sc.nextLine();
-          System.out.print("Address: ");
-          vals[3] = sc.nextLine();
-          System.out.print("Postal Code: ");
-          vals[6] = sc.nextLine();
-          System.out.print("Latitude: ");
-          vals[7] = sc.nextLine();
-          System.out.print("Longitude: ");
-          vals[8] = sc.nextLine();
-          vals[1] = userid;
-          listing.createListing(vals);
-          String lid = listing.getLd(vals);
-          ammenitiesInput(lid);
-          calendarValue[0] = lid;
-          calendarValue[1] = "" + getdate();
-          calendarValue[2] = "" + getdate().plusYears(1);
-          calendarValue[3] = price;
-          calendar.createCalendar(calendarValue);
         }
+        System.out.println("Now please finalize the information for new listing: ");
+        System.out.print("Name: ");
+        vals[0] = sc.nextLine();
+        System.out.print("Address: ");
+        vals[3] = sc.nextLine();
+        System.out.print("Postal Code: ");
+        vals[6] = sc.nextLine();
+        System.out.print("Latitude: ");
+        vals[7] = sc.nextLine();
+        System.out.print("Longitude: ");
+        vals[8] = sc.nextLine();
+        vals[1] = userid;
+        query = "SELECT amenities from amenity natural join listing where "
+            + "ltype = '" + vals[2] + "' and city = '" + vals[4] + "' and country = '"
+            + vals[5] +  "' group by amenities having count(*) = (SELECT "
+            + "count(*) FROM listing where ltype = '" + vals[2] + "' and "
+                + "city = '" + vals[4] + "' and country = '"
+            + vals[5] + "')";
+        try {
+          ans = sql.executequery(query);
+          System.out.println("Suggest amenities from similar listing (empty if there is no suggestion)");
+          printlist(ans);
+        }catch (Exception e) {
+          System.out.println("Wrong input format");
+        }
+        listing.createListing(vals);
+        String lid = listing.getLd(vals);
+        ammenitiesInput(lid);
+        String[] calendarValue = new String[4];
+        calendarValue[0] = lid;
+        calendarValue[1] = "" + getdate();
+        calendarValue[2] = "" + getdate().plusYears(1);
+        calendarValue[3] = price;
+        calendar.createCalendar(calendarValue);
+        System.out.println("Listing successfully created!\n");
       } catch (Exception e) {
-        // need change
-        System.out.println(e);
+        System.out.println("wrong input format");
       }
   }
 	 
