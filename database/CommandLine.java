@@ -102,7 +102,11 @@ public class CommandLine {
 			System.out.println("******Welcome to MyBnB*******");
 			System.out.println("*****************************\n");
 			initiateTables();
-			//MockData.mock(user);
+//			MockData.mockUser(user);
+//			MockData.mockListing(listing);
+//			MockData.mockCalendar(calendar);
+//			MockData.mockAmenity(amenity);
+//			MockData.mockBooking(booking);
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
@@ -527,8 +531,6 @@ public class CommandLine {
 		vals[2] = temp[1];
 		vals[3] = temp[2];
 		vals[1] = userid;
-		vals[4] = "";
-		vals[5] = "";
 		booking.createBooking(vals);
 	}
 	
