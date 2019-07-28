@@ -151,7 +151,6 @@ public class CommandLine {
 				+ " AND password= "
 				+ "'" + user[1] + "'";
 		try {
-			System.out.println(query);
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			if (ans.get(1).get(0) != null) {
 				userid = ans.get(1).get(0);
