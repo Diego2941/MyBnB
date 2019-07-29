@@ -50,7 +50,7 @@ public class Report {
             + "as countTotal, city, country From listing Group BY city, country) "
             + "a, (SELECT count(*) as countHost, hid, city, country From listing "
             + "Group BY hid, city, country) b WHERE a.city = b.city and a.country "
-            + "= b.country and b.countHost >= (a.countTotal/10)";
+            + "= b.country and b.countHost > (a.countTotal/10)";
         try {
            ArrayList<ArrayList<String>> ans = sql.executequery(query);
            System.out.println("Commercial hosts by country and city:");

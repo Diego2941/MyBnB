@@ -238,6 +238,10 @@ public class CommandLine {
 		        	  line = deleteInput();
 		        	  break;
 		          
+		          case "8":
+		            search.performSearch();
+		            break;
+		            
 		          case "logout":
 		        	  System.out.println("Signing out.");
 		        	  username = "";
@@ -632,7 +636,8 @@ public class CommandLine {
 				        + "4. (check previous bookings)\n"
 				        + "5. (comment)\n"
 				        + "6. (rate)\n"
-				        + "7. (delete account)"
+				        + "7. (delete account)\n"
+				        + "9. (search)\n"
 				        + "logout. (logout account):";
 				break;
 				
