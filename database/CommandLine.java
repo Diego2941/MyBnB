@@ -2,6 +2,7 @@ package database;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.time.LocalDate;
+import java.time.Period;
 
 public class CommandLine {
 	private Scanner sc = null;
@@ -591,7 +592,15 @@ public class CommandLine {
 		vals[6] = sc.nextLine();
 		System.out.print("Payment Info(9 ints): ");
 		vals[7] = sc.nextLine();
-		user.createAccount(vals);
+		LocalDate date = LocalDate.parse(vals[4]);
+		LocalDate curr = getdate();
+		Period p = Period.between(date, curr);
+		if (p.getYears() < 18) {
+			System.out.println("You are under age to create an account");
+		}
+		else {
+			user.createAccount(vals);
+		}
 	}
 	
 	public String[] idAndTimeInput() {
