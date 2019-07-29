@@ -389,7 +389,7 @@ public class CommandLine {
 	}
 	
 	public void commentRankInput(String use) {
-		 System.out.print(use + ": ");
+		 System.out.print(use + "(rank in number and comment is just a word): ");
 	     String comment = sc.nextLine();
 	     String[] vals = idAndTimeInput();
 	     String bid = booking.getBid(vals);
@@ -488,7 +488,8 @@ public class CommandLine {
                  + "birth date, "
                  + "ocupation varchar(255), "
                  + "sin int(9), "
-                 + "payment varchar(255), "
+                 + "payment int(9), "
+                 + "UNIQUE KEY (name, password), "
                  + "PRIMARY KEY (uid))";
          
          vals[1] = "CREATE TABLE IF NOT EXISTS "
@@ -499,7 +500,7 @@ public class CommandLine {
                  + "address varchar(255), "
                  + "city varchar(255), "
                  + "country varchar(255), "
-                 + "postcode int, "
+                 + "postcode int(6), "
                  + "latitude float, "
                  + "longitude float, "
                  + "PRIMARY KEY (lid), "
@@ -571,31 +572,31 @@ public class CommandLine {
 		String[] vals = new String[8];
 		System.out.print("Name: ");
 		vals[0] = sc.nextLine();
-		System.out.print("Password: ");
+		System.out.print("Password (max 16 units): ");
 		vals[1] = sc.nextLine();
-		System.out.print("UserType: ");
+		System.out.print("UserType('0' for renter and '1'for host): ");
 		vals[2] = sc.nextLine();
 		System.out.print("Address: ");
 		vals[3] = sc.nextLine();
-		System.out.print("Day of birth: ");
+		System.out.print("Day of birth(yyyy-mm-dd): ");
 		vals[4] = sc.nextLine();
 		System.out.print("Occupation: ");
 		vals[5] = sc.nextLine();
-		System.out.print("SIN: ");
+		System.out.print("SIN(9 ints): ");
 		vals[6] = sc.nextLine();
-		System.out.print("Payment Info: ");
+		System.out.print("Payment Info(9 ints): ");
 		vals[7] = sc.nextLine();
 		user.createAccount(vals);
 	}
 	
 	public String[] idAndTimeInput() {
 		String[] vals = new String[3];
-		System.out.print("ListingID ");
+		System.out.print("ListingID(number): ");
 		vals[0] = sc.nextLine();
 		booking.checkBooking(vals[0]);
-		System.out.print("Checkin: ");
+		System.out.print("Checkin(yyyy-mm-dd): ");
 		vals[1] = sc.nextLine();
-		System.out.print("Checkout: ");
+		System.out.print("Checkout(yyyy-mm-dd): ");
 		vals[2] = sc.nextLine();
 		return vals;
 	}
@@ -622,11 +623,11 @@ public class CommandLine {
 		vals[4] = sc.nextLine();
 		System.out.print("Country: ");
 		vals[5] = sc.nextLine();
-		System.out.print("Postal Code: ");
+		System.out.print("Postal Code(6 ints): ");
 		vals[6] = sc.nextLine();
-		System.out.print("Latitude: ");
+		System.out.print("Latitude(number): ");
 		vals[7] = sc.nextLine();
-		System.out.print("Longitude: ");
+		System.out.print("Longitude(number): ");
 		vals[8] = sc.nextLine();
 		vals[1] = userid;
 		listing.createListing(vals);
@@ -634,18 +635,18 @@ public class CommandLine {
 	}
 	
 	public void ammenitiesInput(String lid) {
-		System.out.println("Amenities: ");
+		System.out.println("Amenities(each separated by a comma): ");
 		String[] vals = sc.nextLine().split(",");
 		amenity.createAmmenities(vals, lid);
 	}
 	
 	public String[] calendarUpdateInput(){
 		String[] vals = new String[4];
-		System.out.println("ListingID: ");
+		System.out.println("ListingID(ints): ");
 		vals[1] = sc.nextLine();
-		System.out.println("Start Date: ");
+		System.out.println("Start Date(yyyy-mm-dd): ");
 		vals[2] = sc.nextLine();
-		System.out.println("End Date: ");
+		System.out.println("End Date(yyyy-mm-dd): ");
 		vals[3] = sc.nextLine();
 		vals[0] = "1";
 		return vals;
@@ -653,7 +654,7 @@ public class CommandLine {
 	
 	public void calendarInput(String lid) {
 		String vals[] = new String[4];
-		System.out.println("Anual for a year starting from today: ");
+		System.out.println("Anual for a year starting from today(number): ");
 		String year = sc.nextLine();
 		vals[0] = lid;
 		vals[1] = "" + getdate();

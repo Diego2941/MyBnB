@@ -26,7 +26,7 @@ public class Calendar {
 			try {
 				splitCalendar("1", vals[0], vals[1], vals[2]);
 				makeAvaible(vals[0], vals[1], vals[2]);
-				System.out.print("Newprice: ");
+				System.out.print("Newprice(number): ");
 				String price = sc.nextLine();
 				updatePrice(price, vals);
 				System.out.println("You have succesfully change the price!.");
