@@ -1,5 +1,6 @@
 package database;
 
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Calendar {
@@ -144,6 +145,24 @@ public class Calendar {
 
 		}
 		return price;
+	}
+	
+	public void extendCalendar(String lid) {
+		String query = "SELECT MAX(enddate) "
+				+ "FROM calendar "
+				+ "WHERE lid = '" + lid + "'";
+		try {
+			String start = sql.executequery(query).get(1).get(0);
+			String price = getPrice(lid,start);
+			LocalDate date = LocalDate.parse(start).plusDays(1);
+			start = "" +date;
+			String end = "" + date.plusYears(1);
+			String[] newSet = {lid, start, end, price};
+			createCalendar(newSet);
+			System.out.println("You have succefully extended your listing for another year!.");
+		} catch (Exception e) {
+			System.out.println("Can not extend expired date.");
+		}
 	}
 	
 	public void calendarUpdateID(String[] vals) {

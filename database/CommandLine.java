@@ -314,6 +314,10 @@ public class CommandLine {
 		        	  break;
 		        	  
 		          case "12":
+		        	  calendar.extendCalendar(lidInput());
+		        	  break;
+		            
+		          case "13":
 		        	  line = deleteInput();
 		        	  break;
 		            
@@ -659,7 +663,7 @@ public class CommandLine {
 		String year = sc.nextLine();
 		vals[0] = lid;
 		vals[1] = "" + getdate();
-		vals[2] = "" + getdate().plusYears(5);
+		vals[2] = "" + getdate().plusYears(3);
 		vals[3] = year;
 		calendar.createCalendar(vals);
 	}
@@ -706,7 +710,8 @@ public class CommandLine {
 			            + "9. (comment)\n"
 			            + "10. (rate)\n"
 			            + "11. (remove listing)\n"
-			            + "12. (delete account)\n"
+			            + "12. (extend the avaible days)\n"
+			            + "13. (delete account)\n"
 			            + "logout. (logout account):";
 				break;
 				

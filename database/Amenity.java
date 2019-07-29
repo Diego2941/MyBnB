@@ -20,7 +20,6 @@ public class Amenity {
 			}
 			System.out.println("You have succesfully uploaded your Amenities");
 		} catch (Exception e) {
-			e.printStackTrace();
 			System.out.println("Ammenieites can not be created may be cause "
 					+ "by the format please try again!.");
 		}
