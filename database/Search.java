@@ -127,13 +127,12 @@ public class Search {
       System.out.println("Filtering by Price...");
       oldQuery = "(" + oldQuery + ") bp";
       String start, end, query;
-      System.out.println("Please enter the latitude");
+      System.out.println("Please enter the prefer lowest price");
       start = sc.nextLine();
-      System.out.println("Please enter the longitude");
+      System.out.println("Please enter the prefer highest price");
       end = sc.nextLine();
-      System.out.println("Please enter the distance or \"d\" to use default 20");
-      
-      query = "";
+      query = "SELECT * FROM "+ oldQuery + " NATURAL JOIN calendar WHERE (price between "
+          + start + " and " + end + ")";
       try {
         ArrayList<ArrayList<String>> ans = sql.executequery(query);
         System.out.println("We found " + (ans.size() - 1) + " listings:");
