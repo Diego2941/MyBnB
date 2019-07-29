@@ -13,6 +13,7 @@ public class CommandLine {
 	private Amenity amenity = null;
 	private Calendar calendar = null;
 	private Report report = null;
+	private Table table = null;
 	private Search search = null;
 	private String admin = "Admin";
 	private String adminpassword = "password";
@@ -48,6 +49,9 @@ public class CommandLine {
 		if (search == null) {
           search = new Search(sc, sql);
         }
+		if (table == null) {
+	          table = new Table(sql);
+	        }
 		try {
 			success = sql.connect(this.getCredentials());
 		} catch (ClassNotFoundException e) {
@@ -62,6 +66,7 @@ public class CommandLine {
 			amenity = null;
 			calendar = null;
 			report = null;
+			table = null;
 
 		}
 		return success;
@@ -81,6 +86,7 @@ public class CommandLine {
 		amenity = null;
 		calendar = null;
 		report = null;
+		table = null;
 	}
 	
 	private String[] getCredentials() {
@@ -106,12 +112,8 @@ public class CommandLine {
 			System.out.println("\n*****************************");
 			System.out.println("******Welcome to MyBnB*******");
 			System.out.println("*****************************\n");
-			initiateTables();
-//			MockData.mockUser(user);
-//			MockData.mockListing(listing);
-//			MockData.mockCalendar(calendar);
-//			MockData.mockAmenity(amenity);
-//			MockData.mockBooking(booking);
+			table.initiateTables();
+			allmock();
 			String input = "";
 			 while(! input.equalsIgnoreCase("exit")) {
 				 System.out.println("Please enter which operations to perform( " + "'h'" + " for help " + "'exit'" + " to exit):\n");
@@ -142,6 +144,7 @@ public class CommandLine {
 		            		break;
 		            }
 		       }
+			 table.drop();
 			return true;
 		} else {
 			System.out.println("");
@@ -481,82 +484,8 @@ public class CommandLine {
       } catch (Exception e) {
         System.out.println("wrong input format");
       }
-  }
-	 
-	 public  void initiateTables() {
-		 String[] vals = new String[5];
-         vals[0] = "CREATE TABLE IF NOT EXISTS "
-                 + "user(uid int NOT NULL AUTO_INCREMENT, "
-                 + "name varchar(255), "
-                 + "password varchar(16), "
-                 + "utype bool, "
-                 + "uaddress varchar(255), "
-                 + "birth date, "
-                 + "ocupation varchar(255), "
-                 + "sin int(9), "
-                 + "payment int(9), "
-                 + "UNIQUE KEY (name, password), "
-                 + "PRIMARY KEY (uid))";
-         
-         vals[1] = "CREATE TABLE IF NOT EXISTS "
-                 + "listing(lid int NOT NULL AUTO_INCREMENT, "
-                 + "name varchar(255), "
-                 + "hid int, "
-                 + "ltype varchar(255), "
-                 + "address varchar(255), "
-                 + "city varchar(255), "
-                 + "country varchar(255), "
-                 + "postcode int(6), "
-                 + "latitude float, "
-                 + "longitude float, "
-                 + "PRIMARY KEY (lid), "
-                 + "FOREIGN KEY (hid) REFERENCES user(uid) "
-                 + " ON DELETE CASCADE)";
-      
-                    
-         vals[2] = "CREATE TABLE IF NOT EXISTS "
-                    + "booking(bid int NOT NULL AUTO_INCREMENT, "
-                    + "lid int, "
-                    + "uid int, "
-                    + "checkin date, "
-                    + "checkout date, "
-                    + "cancelation bool, "
-                    + "hostcomment varchar(255), "
-                    + "rentercomment varchar(255), "
-                    + "hostrank int(1), "
-                    + "renterrank int(1), "
-                    + "PRIMARY KEY (bid), "
-         			+ "FOREIGN KEY (uid) REFERENCES user(uid)"
-         			+ " ON DELETE CASCADE, "
-         			+ "FOREIGN KEY (lid) REFERENCES listing(lid)" 
-         			+ " ON DELETE CASCADE)";
-            
-         vals[3] = "CREATE TABLE IF NOT EXISTS "
-                    + "calendar(lid int, "
-                    + "startdate date, "
-                    + "enddate date, "
-                    + "price float, "
-                    + "avaible bool, "
-                    + "PRIMARY KEY (lid, startdate, enddate), "
-                    + "FOREIGN KEY (lid) REFERENCES listing(lid)"
-                    + " ON DELETE CASCADE)";
-        
-         vals[4] = "CREATE TABLE IF NOT EXISTS "
-        		+ "amenity(lid int, "
-        		+ "amenities VARCHAR(255), "
-        		+ "PRIMARY KEY (lid, amenities), "
-        		+ "FOREIGN KEY (lid) REFERENCES listing(lid)"
-        		+ " ON DELETE CASCADE)";
-        
-        	try {
-        		for(int counter = 0; counter < vals.length; counter++) {
-        			sql.insertop(vals[counter]);
-        		}
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Tables can not be created.");
-        }
-    }
+	}
+
 	 
 	 public String deleteInput() {
 		 System.out.println("To delete your account press (y) !!!.: ");
@@ -762,4 +691,11 @@ public class CommandLine {
 		System.out.println(new String(new char[lst.get(0).size()]).replace("\0", str));
 	}
 	
+	public void allmock() {
+		MockData.mockUser(user);
+		MockData.mockListing(listing);
+		MockData.mockCalendar(calendar);
+		MockData.mockAmenity(amenity);
+		MockData.mockBooking(booking);
+	}
 }
