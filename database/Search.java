@@ -202,8 +202,15 @@ public class Search {
       start = sc.nextLine();
       System.out.println("Please enter the checkout date");
       end = sc.nextLine();
-      query = "SELECT * FROM " + oldQuery  + " natural JOIN calendar WHERE avaible is "
-          + "null and (enddate >= '" + start + "' or startdate <= '" + end + "')";
+      query = "SELECT distinct * FROM calendar NATURAL JOIN listing WHERE "
+          + "((enddate >= '"+ start +"'AND startdate <= '"+ start +"') OR "
+          + "(enddate >= '" + end + "' AND startdate <= '" + end + "') OR "
+          + "(enddate <= '" + end + "' AND startdate >= '"+ start +"')) AND "
+          + "lid not in (SELECT lid From calendar NATURAL JOIN listing WHERE "
+          + "((enddate >= '"+ start +"' AND startdate <= '"+ start +"') OR "
+          + "(enddate >= '" + end + "' AND startdate <= '" + end + "') OR "
+          + "(enddate <= '" + end + "' AND startdate >= '"+ start +"')) and "
+          + "avaible is not null group by lid)";
       try {
         ArrayList<ArrayList<String>> ans = sql.executequery(query);
         System.out.println("We found " + (ans.size() - 1) + " listings:");
