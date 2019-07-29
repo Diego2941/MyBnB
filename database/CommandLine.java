@@ -119,6 +119,9 @@ public class CommandLine {
 		            	case "h":
 		            		help("Menu");
 		            		break;
+		            	case "search":
+		            		search.performSearch();
+		            		break;
 		            	case "signup":
 							accountInput();
 		            		break;
@@ -194,43 +197,40 @@ public class CommandLine {
 	      String line = "";
 	      while(! line.equalsIgnoreCase("logout")) {
 	    	  System.out.println("Hi, " + username + " ! \n"
-		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
+		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'logout'" + " to logout):\n");
 		      line = sc.nextLine();
 	          switch(line) {
 		          case "h":
 	          			help("Renter");
 	          			break;
-		          
+
 		          case "1":
-		            search.performSearch();
-		              break;
-		          case "2":
 		        	  booking.checkBooking("0");
 		              break;
 		              
-		          case "3":
+		          case "2":
 		              bookingInput();
 		              break;
 		          
-		          case "4":
+		          case "3":
 		        	  booking.checkBooking("0");
 		        	  booking.cancelBooking("0", idAndTimeInput());
 		              break;
 		          
-		          case "5":
+		          case "4":
 		        	  booking.prevBooking("0");
 		        	  
 		              break;
 		          
-		          case "6":
+		          case "5":
 		        	  commentRankInput("rentercomment");
 		        	  break;
 		        	  
-		          case "7":
+		          case "6":
 		        	  commentRankInput("hostrank");
 		        	  break;
 
-		          case "8":
+		          case "7":
 		        	  line = deleteInput();
 		        	  break;
 		          
@@ -252,7 +252,7 @@ public class CommandLine {
 	      String line = "";
 	      while(! line.equalsIgnoreCase("logout")) {
 	    	  System.out.println("Hi, " + username + " ! \n"
-		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
+		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'logout'" + " to logout):\n");
 	    	  line = sc.nextLine();
 	          switch(line) {
 	          	  case "h":
@@ -682,14 +682,13 @@ public class CommandLine {
 				break;
 				
 			case "Renter":
-				ans = "1. (search)\n"
-				        + "2. (check your bookings)\n"
-				        + "3. (create booking)\n"
-				        + "4. (cancel booking)\n"
-				        + "5. (check previous bookings)\n"
-				        + "6. (comment)\n"
-				        + "7. (rate)\n"
-				        + "8. (delete account)"
+				ans = "1. (check your bookings)\n"
+				        + "2. (create booking)\n"
+				        + "3. (cancel booking)\n"
+				        + "4. (check previous bookings)\n"
+				        + "5. (comment)\n"
+				        + "6. (rate)\n"
+				        + "7. (delete account)"
 				        + "logout. (logout account):";
 				break;
 				
@@ -710,7 +709,8 @@ public class CommandLine {
 				break;
 				
 			default:
-				ans = "sigup. (Create account)\n"
+				ans = "search. (serach the listings)\n"
+					+ "sigup. (Create account)\n"
 					+ "login. (User operation)\n"
 					+ "reports. (Admin operations)\n"
 					+ "exit. (exit the program):\n";
