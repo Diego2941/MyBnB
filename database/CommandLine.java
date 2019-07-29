@@ -227,10 +227,12 @@ public class CommandLine {
 		              break;
 		          
 		          case "5":
+		              booking.prevBooking("0");
 		        	  commentRankInput("rentercomment");
 		        	  break;
 		        	  
 		          case "6":
+		              booking.prevBooking("0");
 		        	  commentRankInput("hostrank");
 		        	  break;
 
@@ -291,28 +293,36 @@ public class CommandLine {
 		              
 		          case "5":
 		        	  listing.getListing();
+		        	  booking.checkBooking(lidInput());
 		        	  booking.cancelBooking("1", idAndTimeInput());
 		              break;
 		              
 		          case "6":
 		        	  listing.getListing();
+		        	  booking.checkBooking(lidInput());
 		        	  calendar.changePrice(idAndTimeInput());
 		        	  break;
 		        	  
 		          case "7":
 		        	  listing.getListing();
+		        	  booking.checkBooking(lidInput());
 		        	  calendar.changeAvaible(idAndTimeInput());
 		        	  break;
 		        	  
 		          case "8":
+		              listing.getListing();
 		        	  booking.prevBooking(lidInput());
 		        	  break;
 		        	  
 		          case "9":
+		              listing.getListing();
+                      booking.prevBooking(lidInput());
 		        	  commentRankInput("hostcomment");
 		        	  break;
 		        	  
 		          case "10":
+		              listing.getListing();
+		              booking.prevBooking(lidInput());
 		        	  commentRankInput("renterrank");
                     break;
                     
@@ -322,6 +332,7 @@ public class CommandLine {
 		        	  break;
 		        	  
 		          case "12":
+		              listing.getListing();
 		        	  calendar.extendCalendar(lidInput());
 		        	  break;
 		            
@@ -405,7 +416,6 @@ public class CommandLine {
 	     String comment = sc.nextLine();
 	     String[] vals = idAndTimeInput();
 	     String bid = booking.getBid(vals);
-	     System.out.println(bid);
 	     if (booking.isPrevS(bid, vals[0])){
 	    	 user.addRankComment(use, comment, bid);
 	     }
@@ -540,7 +550,6 @@ public class CommandLine {
 		String[] vals = new String[3];
 		System.out.print("ListingID(ints): ");
 		vals[0] = sc.nextLine();
-		booking.checkBooking(vals[0]);
 		System.out.print("Checkin(yyyy-mm-dd): ");
 		vals[1] = sc.nextLine();
 		System.out.print("Checkout(yyyy-mm-dd): ");

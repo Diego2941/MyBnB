@@ -42,7 +42,6 @@ public class User {
 		String query = "UPDATE booking SET " + user + " = '" + comment
 				+ "' WHERE bid = " + "'" + bid + "'";
 		try {
-			System.out.println(query);
 			sql.insertop(query);
 			System.out.println("Comment was succesfully added");
 		} catch (Exception e) {

@@ -25,8 +25,6 @@ public class MockData {
 		user.createAccount(j);
 	}
 	public static void mockBooking(Booking booking) {
-      String [] a = {"1", "1", "2018-10-01", "2018-11-11"};
-      String [] b = {"1", "1", "2018-11-12", "2018-11-13"};
       String [] c = {"2", "2", "2016-09-01", "2016-09-11"};
       String [] d = {"2", "3", "2018-10-01", "2018-10-11"};
       String [] e = {"2", "1", "2018-11-01", "2018-11-11"};
@@ -39,8 +37,6 @@ public class MockData {
       String [] l = {"7", "6", "2019-10-01", "2019-11-11"};
       String [] m = {"8", "6", "2019-10-01", "2019-11-11"};
       String [] n = {"8", "6", "2019-12-01", "2019-12-11"};
-      booking.createBooking(a);
-      booking.createBooking(b);
       booking.createBooking(c);
       booking.createBooking(d);
       booking.createBooking(e);
