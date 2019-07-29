@@ -612,6 +612,7 @@ public class CommandLine {
 		String[] vals = new String[3];
 		System.out.print("ListingID ");
 		vals[0] = sc.nextLine();
+		booking.checkBooking(vals[0]);
 		System.out.print("Checkin: ");
 		vals[1] = sc.nextLine();
 		System.out.print("Checkout: ");

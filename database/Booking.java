@@ -15,7 +15,7 @@ public class Booking {
 	
 	public void createBooking(String[] vals){
 		try {
-			if (calendar.checkAvaible(vals[0], vals[2], vals[3])) {
+			if (calendar.checkAvaible(") ", vals[0], vals[2], vals[3])) {
 				calendar.splitCalendar("0", vals[0], vals[2], vals[3]);
 				String query = "INSERT INTO booking(lid, uid, checkin, checkout"
 						+ ") VALUES(";
