@@ -389,7 +389,7 @@ public class CommandLine {
 	}
 	
 	public void commentRankInput(String use) {
-		 System.out.print(use + "(rank in number and comment is just a word): ");
+		 System.out.print(use + "(rank(int 1-5) and comment is just a word): ");
 	     String comment = sc.nextLine();
 	     String[] vals = idAndTimeInput();
 	     String bid = booking.getBid(vals);
@@ -398,7 +398,8 @@ public class CommandLine {
 	    	 user.addRankComment(use, comment, bid);
 	     }
 	     else {
-	    	 System.out.print("You can not comment or rank a booking that has not yet finished.");
+	    	 System.out.print("You can not comment or rank a booking that "
+	    	 		+ "you did not booked or has not yet finished.");
 	     }
 	}
 	
@@ -591,7 +592,7 @@ public class CommandLine {
 	
 	public String[] idAndTimeInput() {
 		String[] vals = new String[3];
-		System.out.print("ListingID(number): ");
+		System.out.print("ListingID(ints): ");
 		vals[0] = sc.nextLine();
 		booking.checkBooking(vals[0]);
 		System.out.print("Checkin(yyyy-mm-dd): ");
