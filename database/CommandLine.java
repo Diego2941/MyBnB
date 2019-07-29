@@ -188,7 +188,7 @@ public class CommandLine {
 	public void renterOperation() {
 	      // ask for inputs
 	      String line = "";
-	      while(! line.equalsIgnoreCase("back")) {
+	      while(! line.equalsIgnoreCase("logout")) {
 	    	  System.out.println("Hi, " + username + " ! \n"
 		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
 		      line = sc.nextLine();
@@ -196,33 +196,42 @@ public class CommandLine {
 		          case "h":
 	          			help("Renter");
 	          			break;
+		          
 		          case "1":
-		        	  user.deleteUser();
-		              line = "back";
+		        	  
+		             
 		              break;
 		          case "2":
-		              
+		        	  booking.checkBooking("0");
 		              break;
+		              
 		          case "3":
 		              bookingInput();
 		              break;
+		          
 		          case "4":
+		        	  booking.checkBooking("0");
 		        	  booking.cancelBooking("0", idAndTimeInput());
 		              break;
+		          
 		          case "5":
-		        	  commentRankInput("rentercomment");
+		        	  booking.prevBooking("0");
+		        	  
 		              break;
+		          
 		          case "6":
-		        	  commentRankInput("hostrank");
+		        	  commentRankInput("rentercomment");
 		        	  break;
+		        	  
 		          case "7":
-		        	  booking.checkBooking("0");
+		        	  commentRankInput("hostrank");
 		        	  break;
 
 		          case "8":
-		        	  booking.prevBooking("0");
+		        	  line = deleteInput();
 		        	  break;
-		          case "back":
+		          
+		          case "logout":
 		        	  System.out.println("Signing out.");
 		        	  username = "";
 		        	  userid = "";
@@ -238,62 +247,79 @@ public class CommandLine {
 	public void hostOperation() {
 	      // ask for inputs
 	      String line = "";
-	      while(! line.equalsIgnoreCase("back")) {
+	      while(! line.equalsIgnoreCase("logout")) {
 	    	  System.out.println("Hi, " + username + " ! \n"
 		              + "Please enter which operations to perform( " + "'h'" + " for help " + "'back'" + " for previos page):\n");
 	    	  line = sc.nextLine();
 	          switch(line) {
+	          	  case "h":
+	          		   help("Host");
+	          		   break;
+	          		   
 		          case "1":
-		              user.deleteUser();
-		              line = "back";
+		        	  listing.getListing();
 		              break;
+		              
 		          case "2":
-						String[] vals = listingInput();
+		        	  listing.getListing();
+		        	  booking.checkBooking(lidInput());
+		              break;
+		              
+		          case "3":
+		        	  String[] vals = listingInput();
 						String lid = listing.getLd(vals);
 						if (!lid.equals("0")){
 							ammenitiesInput(lid);
 							calendarInput(lid);
 						}
 		              break;
-		          case "3":
-		              booking.cancelBooking("1", idAndTimeInput());
-		              break;
+		              
 		          case "4":
-		              calendar.changePrice(idAndTimeInput());
+		        	  createListByToolKit();
 		              break;
+		              
 		          case "5":
-		              calendar.changeAvaible(idAndTimeInput());
+		        	  listing.getListing();
+		        	  booking.cancelBooking("1", idAndTimeInput());
 		              break;
+		              
 		          case "6":
+		        	  listing.getListing();
+		        	  calendar.changePrice(idAndTimeInput());
+		        	  break;
+		        	  
+		          case "7":
+		        	  listing.getListing();
+		        	  calendar.changeAvaible(idAndTimeInput());
+		        	  break;
+		        	  
+		          case "8":
+		        	  booking.prevBooking(lidInput());
+		        	  break;
+		        	  
+		          case "9":
 		        	  commentRankInput("hostcomment");
 		        	  break;
-		          case "7":
-		        	  commentRankInput("renterrank");
-		        	  break;
-		          case "8":
-		        	  listing.removeListing();
-		        	  break;
-		          case "9":
-		        	  listing.getListing();
-		        	  break;
+		        	  
 		          case "10":
-		        	  createListByToolKit();
+		        	  commentRankInput("renterrank");
                     break;
                     
 		          case "11":
-		        	  booking.prevBooking(lidInput());
+		        	  listing.getListing();
+		        	  listing.removeListing();
 		        	  break;
+		        	  
 		          case "12":
-		        	  booking.checkBooking(lidInput());
+		        	  line = deleteInput();
 		        	  break;
-		          case "h":
-		            help("Host");
-		            break;
-		          case "back":
+		            
+		          case "logout":
 		        	  System.out.println("Signing out.\n");
 		        	  username = "";
 		        	  userid = "";
 		              break;
+		              
 		          default:
 		              System.out.println("Invalid report. Please try again!");
 		              break;
@@ -500,7 +526,7 @@ public class CommandLine {
                     + "startdate date, "
                     + "enddate date, "
                     + "price float, "
-                    + "type bool, "
+                    + "avaible bool, "
                     + "PRIMARY KEY (lid, startdate, enddate), "
                     + "FOREIGN KEY (lid) REFERENCES listing(lid)"
                     + " ON DELETE CASCADE)";
@@ -521,6 +547,17 @@ public class CommandLine {
 				System.out.println("Tables can not be created.");
         }
     }
+	 
+	 public String deleteInput() {
+		 System.out.println("To delete your account press (y) !!!.: ");
+		 String ans = sc.nextLine();
+		 if(ans.equals("y")) {
+			 user.deleteUser();
+			 return "";
+		 }
+		 return "back";
+		 
+	 }
 	 
 	public String lidInput() {
 			System.out.println("Listing ID: ");
@@ -639,37 +676,40 @@ public class CommandLine {
 		              + "12. (most popular comments from renters)\n"
 		              + "back. (back to previous page):\n======================================";
 				break;
+				
 			case "Renter":
-				ans = "1. (delete account)\n"
-				        + "2. (search)\n"
+				ans = "1. (search)\n"
+				        + "2. (check your bookings)\n"
 				        + "3. (create booking)\n"
 				        + "4. (cancel booking)\n"
-				        + "5. (comment)\n"
-				        + "6. (rate)\n"
-				        + "7. (check your bookings)\n"
-				        + "8. (check previous bookings)\n"
-				        + "back. (back to previous page):";
+				        + "5. (check previous bookings)\n"
+				        + "6. (comment)\n"
+				        + "7. (rate)\n"
+				        + "8. (delete account)"
+				        + "logout. (logout account):";
 				break;
+				
 			case "Host":
-				ans = "1. (delete account)\n"
-			              + "2. (create listing)\n"
-			              + "3. (cancel booking)\n"
-			              + "4. (change price)\n"
-			              + "5. (change availability)\n"
-			              + "6. (comment)\n"
-			              + "7. (rate)\n"
-			              + "8. (remove listing)\n"
-			              + "9. (check your listings)\n"
-			              + "10. (create listing by Host ToolKit)\n"
-			              + "11. (check previos bookings by lid)\n"
-			              + "12. (check booking by lid)\n"
-			              + "back. (back to previous page):";
+				ans = "1. (check your listings)\n"
+						+ "2. (check booking by lid)\n"
+			            + "3. (create listing)\n"
+			            + "4. (create listing by Host ToolKit)\n"			              
+			            + "5. (cancel booking)\n"
+			            + "6. (change price)\n"
+			            + "7. (change availability)\n"
+			            + "8. (check previos bookings by lid)\n"
+			            + "9. (comment)\n"
+			            + "10. (rate)\n"
+			            + "11. (remove listing)\n"
+			            + "12. (delete account)\n"
+			            + "logout. (logout account):";
 				break;
+				
 			default:
-				ans = "sigup(Create account)\n"
-					+ "login(User operation)\n"
-					+ "reports(Admin operations)\n"
-					+ "exit(exit the program):\n";
+				ans = "sigup. (Create account)\n"
+					+ "login. (User operation)\n"
+					+ "reports. (Admin operations)\n"
+					+ "exit. (exit the program):\n";
 				break;
 		}
 

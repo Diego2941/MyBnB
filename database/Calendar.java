@@ -40,7 +40,7 @@ public class Calendar {
 	}
 	
 	public void calendarUpdate(String[] vals) {
-		String query = "UPDATE calendar SET type = " + "'" + vals[0] + "' "
+		String query = "UPDATE calendar SET avaible = " + "'" + vals[0] + "' "
 				+ "WHERE lid = " + "'" + vals[1] + "' AND "
 						+ "startdate = " + "'" + vals[2] + "' AND "
 								+ "enddate = " + "'" + vals[3] + "'";
@@ -53,15 +53,31 @@ public class Calendar {
 
 	
 	public boolean checkAvaible(String lid, String start, String end) {
-		String query = "SELECT * FROM calendar "
-				+ "WHERE lid = " + "'" + lid + "' AND "
-						+ "type IS NULL AND "
-						+ "startdate<= " + "'" + start + "' AND "
-								+ "enddate>= " + "'" + end + "'";
+		String from = "SELECT MIN(startdate) FROM calendar "
+				+ "WHERE lid = " + "'" + lid + "' "
+				+ "AND ('" + start + "' BETWEEN startdate AND enddate)";
+		
+		String to = "SELECT MAX(enddate) FROM calendar "
+				+ "WHERE lid = " + "'" + lid + "' "
+						+ "AND ('" + end + "' BETWEEN startdate AND enddate)";
+
 		
 		try {
-			System.out.println(query);
-			if (sql.executequery(query).get(1).get(0) != null) {
+			String first = sql.executequery(from).get(1).get(0);
+			String second = sql.executequery(to).get(1).get(0);
+			
+			String query = "SELECT * FROM calendar "
+					+ "WHERE lid = " + "'" + lid + "' "
+					+ "AND (enddate BETWEEN " + "'" + first + "'AND '"
+							+ second + "')";
+			
+			String query1 = "SELECT * FROM calendar "
+					+ "WHERE lid = " + "'" + lid + "' AND avaible IS NULL "
+					+ "AND (enddate BETWEEN " + "'" + first + "'AND '"
+							+ second + "')";
+			
+			
+			if (sql.executequery(query).get(1).get(0) != null && sql.executequery(query).size() == sql.executequery(query1).size()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -74,7 +90,8 @@ public class Calendar {
 	public boolean checkYourCalendar(String lid, String start, String end) {
 		String query = "SELECT * FROM calendar "
 				+ "WHERE lid = " + "'" + lid + "' AND "
-						+ "type =0 AND "
+						+ "startdate >= CURDATE() AND "
+						+ "avaible =0 AND "
 						+ "startdate= " + "'" + start + "' AND "
 								+ "enddate= " + "'" + end + "'";
 		
@@ -94,12 +111,12 @@ public class Calendar {
 				+ "WHERE lid = " + "'" + vals[0] + "' AND "
 				+ "startdate = " + "'" + vals[1] + "' AND "
 						+ "enddate = " + "'" + vals[2] + "' AND"
-								+ " (type IS NULL OR type = 1)";
+								+ " (avaible IS NULL OR avaible = 1)";
 		try {
 			CommandLine.printlist(sql.executequery(query));
 			if (sql.executequery(query).get(1).get(0) != null) {
 				if (sql.executequery(query).get(1).get(4) != null) {
-					mergeCalendar(vals[0], vals[1], vals[2]);
+					makeAvaible(vals[0], vals[1], vals[2]);
 				}
 				else {
 					splitCalendar("1", vals[0], vals[1], vals[2]);
@@ -121,13 +138,12 @@ public class Calendar {
 	
 	
 	
-	public String getPrice(String lid, String start, String end) {
+	public String getPrice(String lid, String start) {
 		String price = "0";
-		String query = "SELECT AVG(price)"
+		String query = "SELECT price"
 				+ "FROM calendar "
 				+ "WHERE lid =" + "'" + lid + "' AND "
-				+ "startdate >= " + "'" + start + "' AND "
-				+ "enddate <= " + "'" + end + "'";
+				+ "'(" + start + "' BETWEEN satartdate AND enddate)";
 		try {
 			
 			price = sql.executequery(query).get(1).get(0);
@@ -140,7 +156,7 @@ public class Calendar {
 	
 	public void calendarUpdateID(String[] vals) {
 		String query = "UPDATE calendar SET lid = " + "'" + vals[0] + "' "
-				+ "WHERE type = null "
+				+ "WHERE avaible = null "
 						+ "startdate = " + "'" + vals[1] + "' AND "
 								+ "enddate = " + "'" + vals[2] + "'";
 		try {
@@ -164,98 +180,60 @@ public class Calendar {
 	}
 	
 	public void splitCalendar(String user, String id, String start, String end) throws Exception {
-		String date;
-		String query = "SELECT MAX(startdate)"
-				+ "FROM calendar "
-				+ "WHERE lid =" + "'" + id + "' AND "
-				+ "type IS NULL AND startdate <= " + "'" + start + "'";
+		String price, price2, date;
+		String query = "SELECT MIN(startdate) FROM calendar "
+				+ "WHERE lid = " + "'" + id + "' AND avaible IS NULL "
+				+ "AND ('" + start + "' BETWEEN startdate AND enddate)";
 		
+			String from = sql.executequery(query).get(1).get(0);
 			
-			String firststart = sql.executequery(query).get(1).get(0);
-			query = "SELECT MIN(enddate)"
+			query =  "SELECT MAX(enddate) FROM calendar "
+					+ "WHERE lid = " + "'" + id + "'  AND avaible IS NULL "
+					+ "AND ('" + end + "' BETWEEN startdate AND enddate)";
+			
+			String to = sql.executequery(query).get(1).get(0);
+			price = getPrice(id, from);
+			price2 = getPrice(id, to);
+			query = "DELETE "
 					+ "FROM calendar "
-					+ "WHERE lid =" + "'" + id + "' AND "
-					+ "type IS NULL AND enddate >= " + "'" + end + "'";
+					+ "WHERE lid = " + "'" + id + "' AND avaible IS NULL "
+					+ "AND (startdate BETWEEN " + "'" + from + "'AND '"
+							+ to + "')";
 			
-			String secondend = sql.executequery(query).get(1).get(0);
-			System.out.println(firststart + ":" + secondend);
-			String price = getPrice(id, firststart, secondend);
+			sql.insertop(query);
 			
-			if (!firststart.equals(start)) {
+			if (!from.equals(start)) {
 				date = sql.executequery("SELECT DATE_SUB(" + "\"" + start + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);;
-				String[] after = {id, firststart, date, price};
+				String[] after = {id, from, date, price};
 				createCalendar(after);
 			}
 			
-			if (!secondend.equals(end)) {
+			if (!to.equals(end)) {
 				date = sql.executequery("SELECT DATE_ADD(" + "\"" + end + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
-				String[] before = {id, date, secondend, price};
+				String[] before = {id, date, to, price2};
 				createCalendar(before);	
 			}
-			System.out.println(firststart + ":" + secondend);
-			if (!secondend.equals(end) || !firststart.equals(start)) {
-				String[] book = {id, start, end, price};
-				createCalendar(book);
-				
-				String[] update = {user, id, start, end};
+			
+				String[] newone = {id, start, end, price};
+				createCalendar(newone);
+				String[] update = {"0", id, start, end};	
 				calendarUpdate(update);
-				
-				query = "DELETE "
-						+ "FROM calendar "
-						+ "WHERE lid =" + "'" + id + "' AND "
-								+ "type IS NULL AND startdate = " + "'" + firststart + "' AND "
-								+ " enddate = " + "'" + secondend + "'";
-				sql.insertop(query);
-			}
-			else {
-				String[] update = {user, id, start, end};
-				calendarUpdate(update);
-			}
+
 	}
 	
 
 	
-	public void mergeCalendar(String id, String start, String end) throws Exception {
-		String query = "SELECT MAX(enddate)"
-				+ "FROM calendar "
-				+ "WHERE lid =" + "'" + id + "' AND "
-				+ "type IS NOT NULL AND enddate < " + "'" + start + "'";
-		
-			
-			String firstend = sql.executequery(query).get(1).get(0);
-			
-			query = "SELECT MIN(startdate)"
-					+ "FROM calendar "
-					+ "WHERE lid =" + "'" + id + "' AND "
-					+ "type IS NOT NULL AND startdate > " + "'" + end + "'";
-			
-			
-			String secondstart = sql.executequery(query).get(1).get(0);
-			if (firstend != null) {
-				firstend = sql.executequery("SELECT DATE_ADD(" + "\"" + firstend + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
-			}
-			else {
-				firstend = sql.executequery("SELECT MIN(startdate) FROM calendar WHERE lid= " + "'" + id + "'").get(1).get(0);
-			}
-			
-			if (secondstart != null) {
-				secondstart = sql.executequery("SELECT DATE_SUB(" + "\"" + secondstart + "\"" + ", INTERVAL 1 DAY)").get(1).get(0);
-			}
-			
-			else {
-				secondstart = sql.executequery("SELECT MAX(enddate) FROM calendar WHERE lid= " + "'" + id + "'").get(1).get(0);
-			}
-			
-			String price = getPrice(id, firstend, secondstart);
+	public void makeAvaible(String id, String start, String end) throws Exception {
+			String query;
+			String price = getPrice(id, start);
 			query = "DELETE "
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' AND "
-					+ "startdate >= " + "'" + firstend + "' AND "
-					+ "enddate <= " + "'" + secondstart + "'";
-				
+					+ "startdate = " + "'" + start + "' AND "
+					+ "enddate = " + "'" + end + "'";
 				
 			sql.insertop(query);
-			String[] newSet = {id, firstend, secondstart, price};
+			String[] newSet = {id, start, end, price};
 			createCalendar(newSet);
 //			
 	}

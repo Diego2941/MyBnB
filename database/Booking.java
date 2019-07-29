@@ -41,7 +41,6 @@ public class Booking {
 				+ "checkin = " +"'" + vals[1] + "' AND "
 				+ "checkout = " +"'" + vals[2] + "'";
 		try {
-			System.out.println(query);
 			return sql.executequery(query).get(1).get(0);
 			
 		} catch (Exception e) {
@@ -55,7 +54,7 @@ public class Booking {
 				+ "WHERE checkin >= CURDATE() AND "
 				+ "cancelation IS NULL AND "
 				+ "(uid = " + "'" + CommandLine.userid + "' OR "
-				+ "EXISTS (SELECT lid FROM "
+				+ "lid IN (SELECT lid FROM "
 				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 				+ "lid =" + "'" + lid + "'))";
 		try {
@@ -71,7 +70,7 @@ public class Booking {
 				+ "WHERE checkout < CURDATE() AND "
 				+ "cancelation IS NULL AND "
 				+ "(uid = " + "'" + CommandLine.userid + "' OR "
-				+ "EXISTS (SELECT lid FROM "
+				+ "lid IN (SELECT lid FROM "
 				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 				+ "lid =" + "'" + lid + "'))"; 
 		try {
@@ -88,12 +87,11 @@ public class Booking {
 				+ "bid = " + "'" + bid + "' AND "
 				+ "cancelation IS NULL AND "
 				+ "(uid = " + "'" + CommandLine.userid + "' OR "
-				+ "EXISTS (SELECT lid FROM "
+				+ "lid IN (SELECT lid FROM "
 				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 				+ "lid =" + "'" + lid + "'))"; 
 		
 		try {
-			System.out.println(query);
 			 if (sql.executequery(query).get(1).get(0) != null){
 				 return true;
 			 }
@@ -110,7 +108,7 @@ public class Booking {
 				+ "WHERE checkin >= CURDATE() AND "
 				+ "cancelation IS NULL AND "
 				+ "(uid = " + "'" + CommandLine.userid + "' OR "
-				+ "EXISTS (SELECT lid FROM "
+				+ "lid IN (SELECT lid FROM "
 				+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 						+ "lid =" + "'" + vals[0] + "'))";
 		try {
@@ -118,12 +116,12 @@ public class Booking {
 			ArrayList<ArrayList<String>> ans = sql.executequery(query);
 			if (ans.get(1).get(0) != "null") {
 				if (calendar.checkYourCalendar(vals[0], vals[1], vals[2])) {
-					calendar.mergeCalendar(vals[0], vals[1], vals[2]);
+					calendar.makeAvaible(vals[0], vals[1], vals[2]);
 					query = "UPDATE booking SET cancelation = " + "'" + num + "'"
 						+ "WHERE checkin = " + "'" + vals[1] + "'" + " AND "
 										+ "checkout = " + "'" + vals[2] + "' AND"
 												+ "(uid = " + "'" + CommandLine.userid + "' OR "  
-												+ "EXISTS (SELECT lid FROM "
+												+ "lid IN (SELECT lid FROM "
 												+ "listing WHERE hid = " + "'" + CommandLine.userid + "' AND "
 														+ "lid =" + "'" + vals[0] + "'))"; 
 					sql.insertop(query);
