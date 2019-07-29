@@ -24,7 +24,7 @@ public class MockData {
 		user.createAccount(i);
 		user.createAccount(j);
 	}
-	public static void mockBooking(Booking booking) {
+	public static void mockBooking(Booking booking, User user) {
       String [] c = {"2", "2", "2016-09-01", "2016-09-11"};
       String [] d = {"2", "3", "2018-10-01", "2018-10-11"};
       String [] e = {"2", "1", "2018-11-01", "2018-11-11"};
@@ -49,6 +49,28 @@ public class MockData {
       booking.createBooking(l);
       booking.createBooking(m);
       booking.createBooking(n);
+      user.addRankComment("hostcomment", "good" , "1");
+      user.addRankComment("hostcomment", "bad" , "2");
+      user.addRankComment("hostcomment", "soso" , "3");
+      user.addRankComment("hostcomment", "excelent" , "4");
+      user.addRankComment("hostcomment", "good" , "5");
+      user.addRankComment("rentercomment", "well" , "1");
+      user.addRankComment("rentercomment", "nasty" , "2");
+      user.addRankComment("rentercomment", "warm" , "3");
+      user.addRankComment("rentercomment", "good" , "4");
+      user.addRankComment("rentercomment", "bad" , "5");
+      user.addRankComment("renterrank", "4" , "1");
+      user.addRankComment("renterrank", "3" , "2");
+      user.addRankComment("renterrank", "2" , "3");
+      user.addRankComment("renterrank", "5" , "4");
+      user.addRankComment("renterrank", "7" , "5");
+      user.addRankComment("hostrank", "4" , "1");
+      user.addRankComment("hostrank", "4" , "2");
+      user.addRankComment("hostrank", "1" , "3");
+      user.addRankComment("hostrank", "5" , "4");
+      user.addRankComment("hostrank", "5" , "5");
+      
+      
     }
 	public static void mockListing(Listing listing) {
       String [] a = {"list1","4","apt","66 Military","Toronto","Canada","10","1","2",};

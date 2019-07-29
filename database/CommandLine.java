@@ -710,6 +710,6 @@ public class CommandLine {
 		MockData.mockListing(listing);
 		MockData.mockCalendar(calendar);
 		MockData.mockAmenity(amenity);
-		MockData.mockBooking(booking);
+		MockData.mockBooking(booking, user);
 	}
 }
