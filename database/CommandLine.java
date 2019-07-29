@@ -12,6 +12,7 @@ public class CommandLine {
 	private Amenity amenity = null;
 	private Calendar calendar = null;
 	private Report report = null;
+//	private Search search = null;
 	private String admin = "Admin";
 	private String adminpassword = "password";
 	private String username = "";
@@ -29,20 +30,23 @@ public class CommandLine {
 			user = new User(sc, sql);
 		}
 		if (listing == null) {
-			listing = new Listing(sc, sql);;
+			listing = new Listing(sc, sql);
 		}
 		if (amenity == null) {
-			amenity = new Amenity(sc, sql);;
+			amenity = new Amenity(sc, sql);
 		}
 		if (calendar == null) {
 			calendar = new Calendar(sc, sql, listing);
 		}
 		if (booking == null) {
-			booking = new Booking(sc, sql, calendar);;
+			booking = new Booking(sc, sql, calendar);
 		}
 		if (report == null) {
 			report = new Report(sc, sql);
 		}
+//		if (search == null) {
+//          search = new Search(sc, sql);
+//      }
 		try {
 			success = sql.connect(this.getCredentials());
 		} catch (ClassNotFoundException e) {
@@ -203,6 +207,29 @@ public class CommandLine {
 		              break;
 		          case "2":
 		        	  booking.checkBooking("0");
+
+//		            String query;
+//		            System.out.println("1. Search by distance\n"
+//		                + "2. Search by postal code\n"
+//		                + "3. Search by address");
+//		            System.out.println("Please enter which option you want to use for searching");
+//		            line = sc.nextLine();
+//		            switch(line) {
+//		              case "1":
+//		                query = search.searchByLocation();
+//		                search.filterByAmenities(query);
+//		                break;
+//		              case "2":
+//		                query = search.searchByPostal();
+//		                break;
+//		              case "3":
+//		                query = search.searchByAddress();
+//                        break;
+//		              default:
+//		                System.out.println("Invalid report. Back to previous page");
+//		                break;
+//		            }
+		        	  
 		              break;
 		              
 		          case "3":
