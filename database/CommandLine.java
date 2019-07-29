@@ -655,11 +655,11 @@ public class CommandLine {
 	
 	public void calendarInput(String lid) {
 		String vals[] = new String[4];
-		System.out.println("Anual for a year starting from today(number): ");
+		System.out.println("Dayly price for the next 5 year (number): ");
 		String year = sc.nextLine();
 		vals[0] = lid;
 		vals[1] = "" + getdate();
-		vals[2] = "" + getdate().plusYears(1);
+		vals[2] = "" + getdate().plusYears(5);
 		vals[3] = year;
 		calendar.createCalendar(vals);
 	}
