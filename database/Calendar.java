@@ -22,15 +22,16 @@ public class Calendar {
 	}
 	
 	public void changePrice(String[] vals) {
-		listing.getListing();
-		if (checkAvaible(vals[0], vals[1], vals[2])) {
-			System.out.print("Newprice: ");
-			String price = sc.nextLine();
+		if (checkAvaible("OR avaible = '1') ", vals[0], vals[1], vals[2])) {
 			try {
+				splitCalendar("1", vals[0], vals[1], vals[2]);
+				makeAvaible(vals[0], vals[1], vals[2]);
+				System.out.print("Newprice: ");
+				String price = sc.nextLine();
 				updatePrice(price, vals);
+				System.out.println("You have succesfully change the price!.");
 			} catch (Exception e) {
-				System.out.println("You can not change the price. It may be that "
-						+ " you do not have that listing or it is unavaible");
+				System.out.println("You can not change the price you have wrong format.");
 			}
 		}
 		else {
@@ -52,7 +53,7 @@ public class Calendar {
 	}
 
 	
-	public boolean checkAvaible(String lid, String start, String end) {
+	public boolean checkAvaible(String use, String lid, String start, String end) {
 		String from = "SELECT MIN(startdate) FROM calendar "
 				+ "WHERE lid = " + "'" + lid + "' "
 				+ "AND ('" + start + "' BETWEEN startdate AND enddate)";
@@ -72,12 +73,12 @@ public class Calendar {
 							+ second + "')";
 			
 			String query1 = "SELECT * FROM calendar "
-					+ "WHERE lid = " + "'" + lid + "' AND avaible IS NULL "
+					+ "WHERE lid = " + "'" + lid + "' AND (avaible IS NULL " + use
 					+ "AND (enddate BETWEEN " + "'" + first + "'AND '"
 							+ second + "')";
 			
-			
 			if (sql.executequery(query).get(1).get(0) != null && sql.executequery(query).size() == sql.executequery(query1).size()) {
+				
 				return true;
 			}
 		} catch (Exception e) {
@@ -107,15 +108,12 @@ public class Calendar {
 	}
 	
 	public void changeAvaible(String[] vals) {
-		String query  = "SELECT * FROM calendar "
-				+ "WHERE lid = " + "'" + vals[0] + "' AND "
-				+ "startdate = " + "'" + vals[1] + "' AND "
-						+ "enddate = " + "'" + vals[2] + "' AND"
-								+ " (avaible IS NULL OR avaible = 1)";
 		try {
-			CommandLine.printlist(sql.executequery(query));
-			if (sql.executequery(query).get(1).get(0) != null) {
-				if (sql.executequery(query).get(1).get(4) != null) {
+			if (checkAvaible("OR avaible = '1') ", vals[0], vals[1], vals[2])) {
+				System.out.println("Do you want it to be avaible (1) or unavaible(any)");
+				String query = sc.nextLine();
+				if (query.equals("1")) {
+					
 					makeAvaible(vals[0], vals[1], vals[2]);
 				}
 				else {
@@ -124,11 +122,10 @@ public class Calendar {
 				
 				System.out.println("You have succefully change the avaibility "
 						+ "of one of your listings.");	
-				
 			}
 			else {
 				System.out.println("You can not change avaibility that is"
-						+ " not in your listings.");	
+						+ " not in your listings or are booked by renters.");	
 			}
 		} catch (Exception e) {
 			System.out.println("The given input is not in correct format or "
@@ -140,12 +137,11 @@ public class Calendar {
 	
 	public String getPrice(String lid, String start) {
 		String price = "0";
-		String query = "SELECT price"
+		String query = "SELECT price "
 				+ "FROM calendar "
 				+ "WHERE lid =" + "'" + lid + "' AND "
-				+ "'(" + start + "' BETWEEN satartdate AND enddate)";
+				+ "('" + start + "' BETWEEN startdate AND enddate)";
 		try {
-			
 			price = sql.executequery(query).get(1).get(0);
 			
 		} catch (Exception e) {
@@ -160,7 +156,6 @@ public class Calendar {
 						+ "startdate = " + "'" + vals[1] + "' AND "
 								+ "enddate = " + "'" + vals[2] + "'";
 		try {
-			
 			sql.insertop(query);
 		} catch (Exception e) {
 			System.out.println("ID can not be updated.");
@@ -179,24 +174,29 @@ public class Calendar {
 		}
 	}
 	
-	public void splitCalendar(String user, String id, String start, String end) throws Exception {
+	public void splitCalendar(String use, String id, String start, String end) throws Exception {
 		String price, price2, date;
+		String temp = " avaible IS NULL ";
+		if (use.equals("1")) {
+			temp = " (avaible IS NULL OR avaible = 1) ";
+		}
 		String query = "SELECT MIN(startdate) FROM calendar "
-				+ "WHERE lid = " + "'" + id + "' AND avaible IS NULL "
+				+ "WHERE lid = " + "'" + id + "' AND " + temp
 				+ "AND ('" + start + "' BETWEEN startdate AND enddate)";
 		
 			String from = sql.executequery(query).get(1).get(0);
-			
 			query =  "SELECT MAX(enddate) FROM calendar "
-					+ "WHERE lid = " + "'" + id + "'  AND avaible IS NULL "
+					+ "WHERE lid = " + "'" + id + "' AND " + temp
 					+ "AND ('" + end + "' BETWEEN startdate AND enddate)";
+			
 			
 			String to = sql.executequery(query).get(1).get(0);
 			price = getPrice(id, from);
 			price2 = getPrice(id, to);
+			
 			query = "DELETE "
 					+ "FROM calendar "
-					+ "WHERE lid = " + "'" + id + "' AND avaible IS NULL "
+					+ "WHERE lid = " + "'" + id + "' AND " + temp
 					+ "AND (startdate BETWEEN " + "'" + from + "'AND '"
 							+ to + "')";
 			
@@ -216,7 +216,7 @@ public class Calendar {
 			
 				String[] newone = {id, start, end, price};
 				createCalendar(newone);
-				String[] update = {"0", id, start, end};	
+				String[] update = {use, id, start, end};	
 				calendarUpdate(update);
 
 	}
@@ -228,9 +228,9 @@ public class Calendar {
 			String price = getPrice(id, start);
 			query = "DELETE "
 					+ "FROM calendar "
-					+ "WHERE lid =" + "'" + id + "' AND "
-					+ "startdate = " + "'" + start + "' AND "
-					+ "enddate = " + "'" + end + "'";
+					+ "WHERE lid =" + "'" + id + "' "
+					+ "AND (startdate BETWEEN " + "'" + start + "'AND '"
+					+ end + "')";
 				
 			sql.insertop(query);
 			String[] newSet = {id, start, end, price};
