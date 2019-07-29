@@ -15,8 +15,8 @@ public class Calendar {
 	public void updatePrice(String price, String[] vals) throws Exception {
 		String query = "UPDATE calendar SET price= " + "'" + price + "' "
 				+ "WHERE lid= " + "'" + vals[0] + "' AND "
-				+ "startdate= " + "'" + vals[1] + "' AND "
-				+ "enddate= " + "'" + vals[2] + "' ";
+				+ "(startdate BETWEEN " + "'" + vals[1] + "'AND '"
+				+ vals[2] + "')";
 		
 		sql.insertop(query);
 	}
@@ -112,16 +112,12 @@ public class Calendar {
 			if (checkAvaible("OR avaible = '1') ", vals[0], vals[1], vals[2])) {
 				System.out.println("Do you want it to be avaible (1) or unavaible(any)");
 				String query = sc.nextLine();
+				splitCalendar("1", vals[0], vals[1], vals[2]);
 				if (query.equals("1")) {
-					
-					makeAvaible(vals[0], vals[1], vals[2]);
+					makeAvaible(vals[0], vals[1], vals[2]);	
 				}
-				else {
-					splitCalendar("1", vals[0], vals[1], vals[2]);
-				}
-				
 				System.out.println("You have succefully change the avaibility "
-						+ "of one of your listings.");	
+						+ "of one of your listings.");
 			}
 			else {
 				System.out.println("You can not change avaibility that is"
@@ -229,8 +225,8 @@ public class Calendar {
 			query = "DELETE "
 					+ "FROM calendar "
 					+ "WHERE lid =" + "'" + id + "' "
-					+ "AND (startdate BETWEEN " + "'" + start + "'AND '"
-					+ end + "')";
+					+ "AND startdate = " + "'" + start + "' AND "
+					+ "enddate='" + end + "'";
 				
 			sql.insertop(query);
 			String[] newSet = {id, start, end, price};
