@@ -12,6 +12,94 @@ public class Search {
       sql = sqls;
   }
   
+  public void performSearch() {
+    String line;
+    String query;
+    System.out.println("1. Search by distance\n"
+        + "2. Search by postal code\n"
+        + "3. Search by address");
+    System.out.println("Please enter which option you want to use for searching");
+    line = sc.nextLine();
+    switch(line) {
+      case "1":
+        query = searchByLocation();
+        applyFilters(query);
+        break;
+      case "2":
+        query = searchByPostal();
+        applyFilters(query);
+        break;
+      case "3":
+        query = searchByAddress();
+        applyFilters(query);
+        break;
+      default:
+        System.out.println("Invalid report. Back to previous page");
+        break;
+    }
+  }
+  
+  public void applyFilters(String query) {
+    String line, ans;
+    Boolean am = true, da = true, pr = true;
+    System.out.println("Would you like to apply filter on the result? (y/n): ");
+    ans = sc.nextLine();
+    while (ans.equals("y") && (am || da || pr)) {
+      if (am) {
+        System.out.println("1. Filter by Amenities");
+      }
+      if (da) {
+        System.out.println("2. Filter by Date");   
+      }
+      if (pr) {
+        System.out.println("3. Filter by price");
+      }
+      System.out.println("Please enter your option: ");
+      line = sc.nextLine();
+      switch(line) {
+        case "1":
+          query = filterByAmenities(query);
+          am = false;
+          break;
+        case "2":
+          query = filterByDate(query);
+          da = false;
+          break;
+        case "3":
+          query = filterByPrice(query);
+          pr = false;
+          break;
+          default:
+            System.out.println("Invalid input!");
+            break;
+      }
+      System.out.println("Would you like to apply filter on the result? (y/n)");
+      ans = sc.nextLine();
+    }
+    if (!(am || da || pr)) {
+      System.out.println("No more filters to apply");
+    }
+    performRank(query);
+  }
+  
+  private void performRank(String query) {
+    String line;
+    System.out.println("Would you like to rank the result by price? (y/n)");
+    line = sc.nextLine();
+    if (line.equals("y")) {
+      System.out.println("1. Ascending\n2.Descending");
+      System.out.println("Please enter your option:");
+      line = sc.nextLine();
+      if (line.equals("1")) {
+        rankByPriceAsce(query);
+      }else if (line.equals("2")) {
+        rankByPriceDesc(query);
+      }else {
+        System.out.println("Invalid Input! Back to previous page");
+      }
+    }
+  }
+
   public String searchByLocation() {
     System.out.println("Searching by specific location...");
     String lat, lon, distance, query;
@@ -78,7 +166,7 @@ public class Search {
     return query;
   }
     
-    public void filterByAmenities(String oldQuery) {
+    public String filterByAmenities(String oldQuery) {
       System.out.println("Filtering by amenities...");
       oldQuery = "(" + oldQuery + ") ba";
       String amenities, query;
@@ -103,17 +191,19 @@ public class Search {
       } catch (Exception e) {
         System.out.println(e);
       }
+      return query;
     }
   
-    public void filterByDate(String oldQuery) {
+    public String filterByDate(String oldQuery) {
       System.out.println("Filtering by Date...");
       oldQuery = "(" + oldQuery + ") bd";
       String start, end, query;
-      System.out.println("Please enter the latitude");
+      System.out.println("Please enter the checkin date");
       start = sc.nextLine();
-      System.out.println("Please enter the longitude");
+      System.out.println("Please enter the checkout date");
       end = sc.nextLine();
-      query = "";
+      query = "SELECT * FROM " + oldQuery  + " natural JOIN calendar WHERE avaible is "
+          + "null and (enddate >= '" + start + "' or startdate <= '" + end + "')";
       try {
         ArrayList<ArrayList<String>> ans = sql.executequery(query);
         System.out.println("We found " + (ans.size() - 1) + " listings:");
@@ -121,9 +211,10 @@ public class Search {
       } catch (Exception e) {
         System.out.println(e);
       }
+      return query;
     }
     
-    public void filterByPrice(String oldQuery) {
+    public String filterByPrice(String oldQuery) {
       System.out.println("Filtering by Price...");
       oldQuery = "(" + oldQuery + ") bp";
       String start, end, query;
@@ -140,5 +231,34 @@ public class Search {
       } catch (Exception e) {
         System.out.println(e);
       }
+      return query;
+    }
+    
+    public String rankByPriceAsce(String oldQuery) {
+      String query;
+      oldQuery = "(" + oldQuery + ") rbp";
+      query = "SELECT * FROM "+ oldQuery + " NATURAL JOIN calendar ORDER BY price";
+      try {
+        ArrayList<ArrayList<String>> ans = sql.executequery(query);
+        System.out.println("We found " + (ans.size() - 1) + " listings:");
+        CommandLine.printlist(ans);
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+      return query;
+    }
+    
+    public String rankByPriceDesc(String oldQuery) {
+      String query;
+      oldQuery = "(" + oldQuery + ") rbp";
+      query = "SELECT * FROM "+ oldQuery + " NATURAL JOIN calendar ORDER BY price desc";
+      try {
+        ArrayList<ArrayList<String>> ans = sql.executequery(query);
+        System.out.println("We found " + (ans.size() - 1) + " listings:");
+        CommandLine.printlist(ans);
+      } catch (Exception e) {
+        System.out.println(e);
+      }
+      return query;
     }
 }

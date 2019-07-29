@@ -202,27 +202,7 @@ public class CommandLine {
 	          			break;
 		          
 		          case "1":
-		            String query;
-                    System.out.println("1. Search by distance\n"
-                        + "2. Search by postal code\n"
-                        + "3. Search by address");
-                    System.out.println("Please enter which option you want to use for searching");
-                    line = sc.nextLine();
-                    switch(line) {
-                      case "1":
-                        query = search.searchByLocation();
-                        search.filterByAmenities(query);
-                        break;
-                      case "2":
-                        query = search.searchByPostal();
-                        break;
-                      case "3":
-                        query = search.searchByAddress();
-                        break;
-                      default:
-                        System.out.println("Invalid report. Back to previous page");
-                        break;
-                    }
+		            search.performSearch();
 		              break;
 		          case "2":
 		        	  booking.checkBooking("0");
